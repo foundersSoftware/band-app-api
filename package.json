@@ -2,7 +2,7 @@
   "name": "band-app-api",
   "private": true,
   "description": "backend for band-app",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "scripts": {
     "watch": "tsc -w",
