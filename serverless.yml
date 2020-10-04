@@ -26,9 +26,9 @@ functions:
         path: graphql
         method: get
 
-plugins: 
-  - serverless-dotenv-plugin
-  - serverless-offline
+# plugins:
+  # - serverless-dotenv-plugin
+  # - serverless-offline
 custom: 
   serverless-offline: 
     useChildProcesses: true
