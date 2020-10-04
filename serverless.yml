@@ -1,0 +1,37 @@
+service: band-app
+frameworkVersion: 2.3.0
+configValidationMode: error
+provider: 
+  name: aws
+  runtime: nodejs12.x
+  region: us-west-2
+  iamRoleStatements: 
+    - Effect: 'Allow'
+      Action: 
+      - 'dynamodb:Query'
+      - 'dynamodb:Scan'
+      - 'dynamodb:GetItem'
+      - 'dynamodb:PutItem'
+      Resource: 'arn:aws:dynamodb:us-west-2:254249882000:table/User'
+
+functions: 
+  graphql: 
+    handler: 'dist/index.handler'
+    events: 
+    - http: 
+        path: graphql
+        method: post
+        cors: true
+    - http: 
+        path: graphql
+        method: get
+
+plugins: 
+  - serverless-dotenv-plugin
+  - serverless-offline
+custom: 
+  serverless-offline: 
+    useChildProcesses: true
+  
+  dotenv: 
+    basePath: ./.env/
