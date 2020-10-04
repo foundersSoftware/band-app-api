@@ -27,6 +27,6 @@ export const BandAddMemberInput = inputObjectType({
   definition(t) {
     t.string("bandUniqueName", { required: true });
     t.string("userEmail", { required: true });
+    t.string("bandInviteKey", { required: true });
   },
 });
-

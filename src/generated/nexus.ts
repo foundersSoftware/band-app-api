@@ -16,6 +16,7 @@ declare global {
 
 export interface NexusGenInputs {
   BandAddMemberInput: { // input type
+    bandInviteKey: string; // String!
     bandUniqueName: string; // String!
     userEmail: string; // String!
   }
