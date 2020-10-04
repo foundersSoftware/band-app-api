@@ -1,10 +1,8 @@
 import bcrypt from "bcrypt";
 import { APIGatewayProxyEvent } from "aws-lambda";
 
-import UserModel from "./schema/user/model";
-import type { User } from "./schema/user/backingType.d";
-import { isUser } from "./schema/user/utils";
-import { DecodedUserToken, UserToken } from "./auth/UserToken";
+import { getUserRecordFromEmail, isUserRecord } from "./schema/user/utils";
+import { getTokenFromUserRecord, getUserFromToken } from "./auth/UserToken";
 
 const getTokenFromAuthHeader = (event: APIGatewayProxyEvent) => {
   if (event.headers && event.headers.Authorization) {
@@ -15,53 +13,26 @@ const getTokenFromAuthHeader = (event: APIGatewayProxyEvent) => {
 
 const verifyPassword = (reference: string, given: string) => bcrypt.compareSync(given, reference);
 
-const verifyUserExists = async (email: string) => {
-  const existingUser = await UserModel.get(email);
-  return !!existingUser;
-};
-
-// const getDecodedUserTokenFromUser = (user: User): DecodedUserToken => ({
-// email: user.email,
-// });
-
 export const getUserFromRequest = async (event: APIGatewayProxyEvent) => {
   const token = getTokenFromAuthHeader(event);
-  if (token) {
-    const decodedUser = new DecodedUserToken(token);
-
-    if (decodedUser) {
-      if (verifyUserExists(decodedUser.payload.email)) {
-        return decodedUser;
-      }
-    }
-  }
-  return null;
+  return token ? getUserFromToken(token) : null;
 };
 
 export const getUserTokenFromCredentials = async (
   email: string,
   password: string,
 ) => {
-  const userDocument = await UserModel.get(email);
+  const userRecord = await getUserRecordFromEmail(email);
 
-  if (
-    !DecodedUserToken.isUserTokenPayload(userDocument)
-    || !isUser(userDocument)
-  ) {
-    throw Error("User Does Not Exist");
-  } else if (!verifyPassword(userDocument.password, password)) {
-    throw Error("Incorrect Password");
+  if (!isUserRecord(userRecord)) {
+    throw Error("Cannot find record of user with email: {email}");
   }
 
-  const { token } = new DecodedUserToken(userDocument).encode();
+  if (!verifyPassword(userRecord.password, password)) {
+    throw Error("Incorrect password!");
+  }
 
-  return { token };
+  return getTokenFromUserRecord(userRecord);
 };
 
 export const hashPassword = (password: string) => bcrypt.hashSync(password, 3);
-export const getTokenFromUser = (user: User) => new DecodedUserToken(user).encode();
-
-// export const getTokenFromUser = (user: DecodedUserToken) => ({
-// token:
-// token: jwt.sign({ email: user.email }, process.env.SECRET_KEY),
-// });

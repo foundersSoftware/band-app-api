@@ -2,7 +2,7 @@ import {
   queryField, extendType, stringArg, intArg,
 } from "@nexus/schema";
 import model from "./model";
-import { isUser } from "./utils";
+import { isUserRecord } from "./utils";
 
 export const addUserCrudToQuery = extendType({
   type: "Query",
@@ -11,8 +11,10 @@ export const addUserCrudToQuery = extendType({
       type: "User",
       args: { id: stringArg({ required: true }) },
       resolve: async (_root, { id }) => {
-        const document = await model.get({ id });
-        return isUser(document) ? document : { email: "", password: "" };
+        const userRecord = await model.get({ id });
+        return isUserRecord(userRecord)
+          ? userRecord
+          : { email: "", password: "" };
       },
     });
   },
@@ -22,8 +24,10 @@ export const me = queryField("me", {
   type: "User",
   resolve: async (_root, _args, { user }) => {
     if (user) {
-      const userDocument = await model.get({ email: user.email });
-      return isUser(userDocument) ? userDocument : { email: "", password: "" };
+      const userRecord = await model.get({ email: user.email });
+      return isUserRecord(userRecord)
+        ? userRecord
+        : { email: "", password: "" };
     }
     return { email: "", password: "" };
   },
@@ -34,9 +38,9 @@ export const users = queryField("users", {
   list: true,
   args: { last: intArg({ default: 5, nullable: false }) },
   resolve: async (_, { last }) => {
-    const userDocuments = await model.scan().limit(last).exec();
-    if (isUser(userDocuments[0])) {
-      return userDocuments;
+    const userRecords = await model.scan().limit(last).exec();
+    if (isUserRecord(userRecords[0])) {
+      return userRecords;
     }
     return { email: "", password: "" };
   },

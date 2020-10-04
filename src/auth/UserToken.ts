@@ -1,44 +1,22 @@
-export interface UserTokenPayload {
-  email: string;
-}
+import jwt from "jsonwebtoken";
 
-export class UserToken {
-  token: string;
+import { isUser, verifyUserRecordExists } from "../schema/user/utils";
+import type { User, UserRecord } from "../schema/user/backingType.d";
 
-  constructor(token: string) {
-    this.token = token;
-  }
+const getUserFromUserRecord = ({ email }: UserRecord): User => ({ email });
 
-  decode = () => {
-    const payload = jwt.verify(this.token, process.env.SECRET_KEY);
-    // need to make sure the decodedToken fits the UserTokenPayload interface
-    if (!DecodedUserToken.isUserTokenPayload(payload)) {
-      throw new Error(
-        "Could not decode Token: Decoded payload is not a user payload",
-      );
-    }
-    return new DecodedUserToken(payload);
-  };
-}
+const decodeToken = (token: Token): Object => jwt.verify(token, process.env.SECRET_KEY);
 
-export class DecodedUserToken {
-  payload: UserTokenPayload;
+const getTokenFromUser = (user: User): Token => jwt.sign(user, process.env.SECRET_KEY);
 
-  constructor(payload: UserTokenPayload) {
-    this.payload = payload;
-  }
+export type Token = string;
 
-  encode = () => {
-    const token = jwt.sign(this.payload, process.env.SECRET_KEY);
-    return new UserToken(token);
-  };
+export const getUserFromToken = async (token: Token): Promise<User | null> => {
+  const decodedToken = decodeToken(token);
 
-  static isUserTokenPayload = (input: any): input is UserTokenPayload => {
-    const keys = Object.keys(input);
-    return (
-      keys.length === 1
-      && keys[0] === "email"
-      && typeof input.email === "string"
-    );
-  };
-}
+  return isUser(decodedToken) && (await verifyUserRecordExists(decodedToken))
+    ? decodedToken
+    : null;
+};
+
+export const getTokenFromUserRecord = (userRecord: UserRecord) => getTokenFromUser(getUserFromUserRecord(userRecord));

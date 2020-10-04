@@ -1,11 +1,9 @@
 import { arg, mutationField } from "@nexus/schema";
+import { ApolloError, UserInputError } from "apollo-server-lambda";
+import { getTokenFromUserRecord } from "../../auth/UserToken";
 import model from "./model";
-import { isUser } from "./utils";
-import {
-  getTokenFromUser,
-  getUserTokenFromCredentials,
-  hashPassword,
-} from "../../auth";
+import { isUserRecord } from "./utils";
+import { getUserTokenFromCredentials, hashPassword } from "../../auth";
 
 export const createOneUser = mutationField("createOneUser", {
   type: "UserToken",
@@ -14,11 +12,18 @@ export const createOneUser = mutationField("createOneUser", {
     user: arg({ type: "UserCreateInput", required: true }),
   },
   resolve: async (_root, { user }) => {
-    const userDocument = await model.create({
-      ...user,
-      password: hashPassword(user.password),
-    });
-    return isUser(userDocument) ? getTokenFromUser(userDocument) : null;
+    try {
+      const userRecord = await model.create({
+        ...user,
+        password: hashPassword(user.password),
+      });
+
+      return isUserRecord(userRecord)
+        ? { token: getTokenFromUserRecord(userRecord) }
+        : null;
+    } catch (e) {
+      throw new ApolloError(e.message);
+    }
   },
 });
 
@@ -28,7 +33,12 @@ export const login = mutationField("login", {
   args: {
     credentials: arg({ type: "UserCredentialsType", required: true }),
   },
-  resolve: async (_root, { credentials }) => getUserTokenFromCredentials(credentials.email, credentials.password),
-  // const userDocument = await model.get({ email: credentials.email });
-  // return isUser(userDocument) ? getTokenFromUser(userDocument) : null;
+  resolve: async (_root, { credentials: { email, password } }) => {
+    try {
+      const token = await getUserTokenFromCredentials(email, password);
+      return { token };
+    } catch (e) {
+      throw new UserInputError(e.message);
+    }
+  },
 });
