@@ -2,12 +2,33 @@
 ### Do not make changes to this file directly
 
 
+type Band {
+  location: String
+  members: [User!]!
+  name: String!
+  uniqueName: String!
+}
+
+input BandAddMemberInput {
+  bandUniqueName: String!
+  userEmail: String!
+}
+
+input BandCreateInput {
+  location: String
+  name: String!
+  uniqueName: String!
+}
+
 type Mutation {
+  addOneUserToOneBand(band: BandAddMemberInput!): Band!
+  createOneBand(band: BandCreateInput!): Band!
   createOneUser(user: UserCreateInput!): UserToken
   login(credentials: UserCredentialsType!): UserToken
 }
 
 type Query {
+  getMyBand: Band
   me: User!
   userById(id: String!): User!
   users(last: Int! = 5): [User!]!
