@@ -1,5 +1,5 @@
 service: band-app
-frameworkVersion: 2.3.0
+frameworkVersion: 1.82.0
 configValidationMode: error
 provider: 
   name: aws
