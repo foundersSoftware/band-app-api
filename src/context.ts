@@ -1,7 +1,12 @@
 import type { APIGatewayProxyEvent } from "aws-lambda";
 
 import { getUserFromRequest } from "./auth";
-import type { Context } from "./schema/context.d";
+import { User } from "./models/user";
+
+export interface Context {
+  event: APIGatewayProxyEvent;
+  user: User | null;
+}
 
 export async function createContext({
   event,

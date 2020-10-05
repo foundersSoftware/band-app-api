@@ -21,11 +21,11 @@ export default makeSchema({
     sources: [
       {
         alias: "ctx",
-        source: path.join(__dirname, "./context.d.ts"),
+        source: path.join(__dirname, "../context.ts"),
       },
       {
-        alias: "dynamoose",
-        source: path.join(__dirname, "./user/backingType.d.ts"),
+        alias: "user",
+        source: path.join(__dirname, "../models/user.ts"),
       },
     ],
   },

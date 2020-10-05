@@ -30,9 +30,8 @@ type Mutation {
 
 type Query {
   getMyBand: Band
+  findOneUserByEmail(email: String!): User!
   me: User!
-  userById(id: String!): User!
-  users(last: Int! = 5): [User!]!
 }
 
 type User {

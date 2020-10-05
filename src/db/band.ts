@@ -1,15 +1,31 @@
 import dynamoose from "dynamoose";
 import shortid from "shortid";
 
-const UserSchema = new dynamoose.Schema(
+const BandSchema = new dynamoose.Schema(
   {
+    pk: {
+      type: String,
+      hashKey: true,
+    },
+    sk: {
+      type: String,
+      rangeKey: true,
+      index: {
+        global: true,
+        rangeKey: "pk",
+      },
+    },
+    bandName: {
+      type: String,
+    },
     email: {
       type: String,
-      required: true,
     },
     password: {
       type: String,
-      required: true,
+    },
+    role: {
+      type: String,
     },
   },
   {
@@ -17,7 +33,7 @@ const UserSchema = new dynamoose.Schema(
   },
 );
 
-const UserModel = dynamoose.model("User", UserSchema, {
+const BandModel = dynamoose.model("Band", BandSchema, {
   create: process.env.NODE_ENV === "development",
   waitForActive: {
     enabled: process.env.NODE_ENV === "development",
@@ -29,4 +45,4 @@ const UserModel = dynamoose.model("User", UserSchema, {
   },
 });
 
-export default UserModel;
+export default BandModel;
