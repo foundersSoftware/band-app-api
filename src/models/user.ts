@@ -10,7 +10,7 @@ import type {
   UserRecord,
 } from "./types";
 
-const isUserRecord = (document: unknown): document is UserRecord => {
+export const isUserRecord = (document: unknown): document is UserRecord => {
   const user = document as UserRecord;
   return (
     user.pk !== undefined &&
@@ -20,7 +20,7 @@ const isUserRecord = (document: unknown): document is UserRecord => {
   );
 };
 
-const getUserFromUserRecord = (userRecord: UserRecord): User => ({
+export const getUserFromUserRecord = (userRecord: UserRecord): User => ({
   email: userRecord.pk.slice(USER_KEY_PREFIX.length),
   password: userRecord.password,
 });

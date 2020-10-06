@@ -46,3 +46,20 @@ export interface BandRecord extends BandKey {
   name: BandName;
   location: Location;
 }
+
+export interface BandMembership {
+  bandName: BandName;
+  memberEmail: Email;
+  role: BandMemberRole;
+}
+
+export interface BandMembershipKey {
+  pk: PrefixedBandId;
+  sk: PrefixedUserId;
+}
+
+export interface BandMembershipRecord extends BandMembershipKey {
+  pk: PrefixedBandId;
+  sk: PrefixedUserId;
+  role: BandMemberRole;
+}
