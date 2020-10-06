@@ -10,15 +10,14 @@ type Band {
 }
 
 input BandAddMemberInput {
-  bandInviteKey: String!
-  bandUniqueName: String!
-  userEmail: String!
+  bandId: String!
+  bandMemberRole: String!
+  userId: String!
 }
 
 input BandCreateInput {
-  location: String
+  location: String!
   name: String!
-  uniqueName: String!
 }
 
 type Mutation {

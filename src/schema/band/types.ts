@@ -4,9 +4,9 @@ import { fetchUsersByBandId } from "../../models/bandMembership";
 export const Band = objectType({
   name: "Band",
   definition(t) {
+    t.string("id");
     t.string("name");
-    t.string("uniqueName");
-    t.string("location", { nullable: true });
+    t.string("location");
     t.field("members", {
       type: "User",
       list: true,
@@ -28,16 +28,15 @@ export const BandCreateInput = inputObjectType({
   name: "BandCreateInput",
   definition(t) {
     t.string("name", { required: true });
-    t.string("uniqueName", { required: true });
-    t.string("location");
+    t.string("location", { required: true });
   },
 });
 
 export const BandAddMemberInput = inputObjectType({
   name: "BandAddMemberInput",
   definition(t) {
-    t.string("bandUniqueName", { required: true });
-    t.string("userEmail", { required: true });
-    t.string("bandInviteKey", { required: true });
+    t.string("bandId", { required: true });
+    t.string("userId", { required: true });
+    t.string("bandMemberRole", { required: true });
   },
 });
