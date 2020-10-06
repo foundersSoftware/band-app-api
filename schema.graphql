@@ -21,7 +21,7 @@ input BandCreateInput {
 }
 
 type Mutation {
-  addOneUserToOneBand(band: BandAddMemberInput!): Band!
+  addOneUserToOneBand(membership: BandAddMemberInput!): String!
   createOneBand(band: BandCreateInput!): Band!
   createOneUser(user: UserCreateInput!): UserToken
   login(credentials: UserCredentialsType!): UserToken

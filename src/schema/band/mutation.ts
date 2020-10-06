@@ -22,14 +22,20 @@ export const createOneBand = mutationField("createOneBand", {
 });
 
 export const addOneUserToOneBand = mutationField("addOneUserToOneBand", {
-  type: "Band",
+  // todo: change this back to "Band"
+  type: "String",
   args: {
-    band: arg({ type: "BandAddMemberInput", required: true }),
+    membership: arg({ type: "BandAddMemberInput", required: true }),
   },
-  resolve: () => ({
-    name: "",
-    uniqueName: "",
-    location: "",
-    members: [],
-  }),
+  resolve: async (
+    _parent,
+    { membership: { userId, bandId, bandMemberRole } }
+  ) => {
+    try {
+      addUserToBand(userId, bandId, bandMemberRole);
+      return "Success";
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  },
 });
