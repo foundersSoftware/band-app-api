@@ -3,8 +3,8 @@
  * Do not make changes to this file directly
  */
 
-import * as ctx from "../schema/context"
-import * as dynamoose from "../schema/user/backingType"
+import * as ctx from "../context"
+import * as models from "../models/types"
 
 
 
@@ -16,14 +16,13 @@ declare global {
 
 export interface NexusGenInputs {
   BandAddMemberInput: { // input type
-    bandInviteKey: string; // String!
-    bandUniqueName: string; // String!
-    userEmail: string; // String!
+    bandId: string; // String!
+    bandMemberRole: string; // String!
+    userId: string; // String!
   }
   BandCreateInput: { // input type
-    location?: string | null; // String
+    location: string; // String!
     name: string; // String!
-    uniqueName: string; // String!
   }
   UserCreateInput: { // input type
     email: string; // String!
@@ -47,15 +46,10 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenRootTypes {
-  Band: { // root type
-    location?: string | null; // String
-    members: NexusGenRootTypes['User'][]; // [User!]!
-    name: string; // String!
-    uniqueName: string; // String!
-  }
+  Band: models.Band;
   Mutation: {};
   Query: {};
-  User: dynamoose.User;
+  User: models.User;
   UserToken: { // root type
     token: string; // String!
   }
@@ -75,22 +69,21 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 
 export interface NexusGenFieldTypes {
   Band: { // field return type
-    location: string | null; // String
+    id: string; // String!
+    location: string; // String!
     members: NexusGenRootTypes['User'][]; // [User!]!
     name: string; // String!
-    uniqueName: string; // String!
   }
   Mutation: { // field return type
-    addOneUserToOneBand: NexusGenRootTypes['Band']; // Band!
+    addOneUserToOneBand: string; // String!
     createOneBand: NexusGenRootTypes['Band']; // Band!
     createOneUser: NexusGenRootTypes['UserToken'] | null; // UserToken
     login: NexusGenRootTypes['UserToken'] | null; // UserToken
   }
   Query: { // field return type
-    getMyBand: NexusGenRootTypes['Band'] | null; // Band
+    findOneUserByEmail: NexusGenRootTypes['User']; // User!
+    getOneBandById: NexusGenRootTypes['Band']; // Band!
     me: NexusGenRootTypes['User']; // User!
-    userById: NexusGenRootTypes['User']; // User!
-    users: NexusGenRootTypes['User'][]; // [User!]!
   }
   User: { // field return type
     email: string; // String!
@@ -103,7 +96,7 @@ export interface NexusGenFieldTypes {
 export interface NexusGenArgTypes {
   Mutation: {
     addOneUserToOneBand: { // args
-      band: NexusGenInputs['BandAddMemberInput']; // BandAddMemberInput!
+      membership: NexusGenInputs['BandAddMemberInput']; // BandAddMemberInput!
     }
     createOneBand: { // args
       band: NexusGenInputs['BandCreateInput']; // BandCreateInput!
@@ -116,11 +109,11 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
-    userById: { // args
-      id: string; // String!
+    findOneUserByEmail: { // args
+      email: string; // String!
     }
-    users: { // args
-      last: number; // Int!
+    getOneBandById: { // args
+      bandId: string; // String!
     }
   }
 }
