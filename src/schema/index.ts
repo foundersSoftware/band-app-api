@@ -24,8 +24,8 @@ export default makeSchema({
         source: path.join(__dirname, "../context.ts"),
       },
       {
-        alias: "user",
-        source: path.join(__dirname, "../models/user.ts"),
+        alias: "models",
+        source: path.join(__dirname, "../models/types.ts"),
       },
     ],
   },

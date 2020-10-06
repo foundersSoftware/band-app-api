@@ -1,7 +1,7 @@
 import type { APIGatewayProxyEvent } from "aws-lambda";
 
 import { getUserFromRequest } from "./auth";
-import { User } from "./models/user";
+import { User } from "./models/types";
 
 export interface Context {
   event: APIGatewayProxyEvent;

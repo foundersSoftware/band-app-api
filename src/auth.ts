@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { fetchUserByEmail } from "./models/user";
-import type { User } from "./models/user";
+import type { User } from "./models/types";
 
 export interface DecodedUserToken {
   email: string;

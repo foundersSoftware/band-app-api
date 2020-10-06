@@ -1,30 +1,14 @@
 // import shortid from "shortid";
 import bcrypt from "bcrypt";
 import { BandModel } from "../db";
-
-export type Email = string;
-export type Password = string;
-
-export interface UserCredentials {
-  email: Email;
-  password: Password;
-}
-
-export interface User {
-  email: Email;
-  password: Password;
-}
-
-const USER_KEY_PREFIX = "USER-";
-
-interface UserKey {
-  pk: Email;
-  sk: Email;
-}
-
-interface UserRecord extends UserKey {
-  password: Password;
-}
+import { USER_KEY_PREFIX } from "./constants";
+import type {
+  Email,
+  User,
+  UserCredentials,
+  UserKey,
+  UserRecord,
+} from "./types";
 
 const isUserRecord = (document: unknown): document is UserRecord => {
   const user = document as UserRecord;
