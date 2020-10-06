@@ -1,4 +1,5 @@
 import { inputObjectType, objectType } from "@nexus/schema";
+import { fetchUsersByBandId } from "../../models/bandMembership";
 
 export const Band = objectType({
   name: "Band",
@@ -9,6 +10,16 @@ export const Band = objectType({
     t.field("members", {
       type: "User",
       list: true,
+      resolve: async (parent) => {
+        // todo: fix this typescript stuff.  Probably need to take another
+        // look at gql backing types
+        // @ts-ignore
+        if (parent.members) {
+          // @ts-ignore
+          return parent.members;
+        }
+        return fetchUsersByBandId(parent.id);
+      },
     });
   },
 });
