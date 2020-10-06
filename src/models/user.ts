@@ -1,4 +1,3 @@
-// import shortid from "shortid";
 import bcrypt from "bcrypt";
 import { BandModel } from "../db";
 import { USER_KEY_PREFIX } from "./constants";
@@ -13,10 +12,10 @@ import type {
 export const isUserRecord = (document: unknown): document is UserRecord => {
   const user = document as UserRecord;
   return (
-    user.pk !== undefined &&
-    user.pk.startsWith(USER_KEY_PREFIX) &&
-    user.sk === user.pk &&
-    user.password !== undefined
+    user.pk !== undefined
+    && user.pk.startsWith(USER_KEY_PREFIX)
+    && user.sk === user.pk
+    && user.password !== undefined
   );
 };
 
@@ -60,7 +59,7 @@ export const createUser = async (user: User) => {
 };
 
 export const authenticateUserCredentials = async (
-  credentials: UserCredentials
+  credentials: UserCredentials,
 ) => {
   try {
     const user = await fetchUserByEmail(credentials.email);
