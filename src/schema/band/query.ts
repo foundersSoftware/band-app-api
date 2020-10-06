@@ -1,13 +1,10 @@
-import { queryField } from "@nexus/schema";
+import { arg, queryField } from "@nexus/schema";
+import { fetchBandById } from "../../models/band";
 
-export const getMyBand = queryField("getMyBand", {
+export const getOneBandById = queryField("getOneBandById", {
   type: "Band",
-  // list: true,
-  nullable: true,
-  resolve: () => ({
-    name: "",
-    uniqueName: "",
-    location: "",
-    members: [],
-  }),
+  args: {
+    bandId: arg({ type: "String", required: true }),
+  },
+  resolve: (_parent, { bandId }) => fetchBandById(bandId),
 });

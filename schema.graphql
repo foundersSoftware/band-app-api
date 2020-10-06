@@ -29,8 +29,8 @@ type Mutation {
 }
 
 type Query {
-  getMyBand: Band
   findOneUserByEmail(email: String!): User!
+  getOneBandById(bandId: String!): Band!
   me: User!
 }
 
