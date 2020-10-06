@@ -3,10 +3,10 @@
 
 
 type Band {
-  location: String
+  id: String!
+  location: String!
   members: [User!]!
   name: String!
-  uniqueName: String!
 }
 
 input BandAddMemberInput {
