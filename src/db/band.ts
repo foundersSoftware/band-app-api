@@ -1,5 +1,4 @@
 import dynamoose from "dynamoose";
-import shortid from "shortid";
 
 const BandSchema = new dynamoose.Schema(
   {
@@ -15,10 +14,10 @@ const BandSchema = new dynamoose.Schema(
         rangeKey: "pk",
       },
     },
-    bandName: {
+    name: {
       type: String,
     },
-    email: {
+    location: {
       type: String,
     },
     password: {
