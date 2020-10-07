@@ -1,12 +1,8 @@
 import bcrypt from "bcrypt";
 import { BandModel } from "../db";
-import { USER_KEY_PREFIX } from "./constants";
+import { USER_KEY_PREFIX, BAND_KEY_PREFIX } from "./constants";
 import type {
-  Email,
-  User,
-  UserCredentials,
-  UserKey,
-  UserRecord,
+  Email, UserCreateInput, User, UserRecord,
 } from "./types";
 
 export const isUserRecord = (document: unknown): document is UserRecord => {
@@ -19,48 +15,52 @@ export const isUserRecord = (document: unknown): document is UserRecord => {
   );
 };
 
-export const getUserFromUserRecord = (userRecord: UserRecord): User => ({
-  email: userRecord.pk.slice(USER_KEY_PREFIX.length),
-  password: userRecord.password,
+export const getUserFromRecord = (userRecord: UserRecord): User => {
+  const email = userRecord.pk.slice(USER_KEY_PREFIX.length);
+  return {
+    email,
+    password: userRecord.password,
+  };
+};
+
+const getUserFromCreateInput = (createInput: UserCreateInput): User => createInput;
+
+const getRecordFromUser = (model: User): UserRecord => ({
+  pk: USER_KEY_PREFIX + model.email,
+  sk: USER_KEY_PREFIX + model.email,
+  password: bcrypt.hashSync(model.password, 3),
 });
 
-const getUserKeyFromEmail = (email: Email): UserKey => ({
-  pk: USER_KEY_PREFIX + email,
-  sk: USER_KEY_PREFIX + email,
-});
-
-const getUserRecordFromUser = (user: User): UserRecord => ({
-  pk: USER_KEY_PREFIX + user.email,
-  sk: USER_KEY_PREFIX + user.email,
-  password: bcrypt.hashSync(user.password, 3),
-});
-
-export const fetchUserByEmail = async (email: Email) => {
+export const fetchUserByEmail = async (email: Email): Promise<User> => {
   try {
-    const userRecord = await BandModel.get({ ...getUserKeyFromEmail(email) });
+    const key = USER_KEY_PREFIX + email;
+    const userRecord = await BandModel.get({
+      pk: key,
+      sk: key,
+    });
 
     if (!isUserRecord(userRecord)) {
       throw new Error("document is not a userRecord");
     }
 
-    return getUserFromUserRecord(userRecord);
+    return getUserFromRecord(userRecord);
   } catch (e) {
     throw new Error(`Failed to fetch user with email: ${email}`);
   }
 };
 
-export const createUser = async (user: User) => {
+export const createUser = async (user: UserCreateInput): Promise<User> => {
   try {
-    await BandModel.create(getUserRecordFromUser(user));
-    return user;
+    const userModel = getUserFromCreateInput(user);
+    const userRecord = getRecordFromUser(userModel);
+    await BandModel.create(userRecord);
+    return userModel;
   } catch (e) {
     throw new Error(`Failed to create user with email: ${user.email}`);
   }
 };
 
-export const authenticateUserCredentials = async (
-  credentials: UserCredentials,
-) => {
+export const authenticateUserCredentials = async (credentials: User) => {
   try {
     const user = await fetchUserByEmail(credentials.email);
     if (!bcrypt.compareSync(credentials.password, user.password)) {

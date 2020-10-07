@@ -1,5 +1,5 @@
 import { inputObjectType, objectType } from "@nexus/schema";
-import { fetchUsersByBandId } from "../../models/bandMembership";
+import { fetchUsersByBand } from "../../models/bandMembership";
 
 export const Band = objectType({
   name: "Band",

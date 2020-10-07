@@ -7,9 +7,10 @@ import type {
   BandId,
   BandKey,
   BandRecord,
+  PrefixedBandId,
 } from "./types";
 
-const isBandRecord = (document: unknown): document is BandRecord => {
+export const isBandRecord = (document: unknown): document is BandRecord => {
   const band = document as BandRecord;
   return (
     band.pk !== undefined
@@ -20,7 +21,6 @@ const isBandRecord = (document: unknown): document is BandRecord => {
 
 const getBandRecordFromBand = (band: Band): BandRecord => {
   const key = BAND_KEY_PREFIX + band.id;
-
   return {
     pk: key,
     sk: key,
@@ -29,22 +29,22 @@ const getBandRecordFromBand = (band: Band): BandRecord => {
   };
 };
 
-const getBandFromBandCreateInput = (
-  bandCreateInput: BandCreateInput,
-): Band => ({
+const getBandFromCreateInput = (band: BandCreateInput): Band => ({
   id: shortid.generate(),
-  ...bandCreateInput,
+  ...band,
 });
 
 const getBandKeyFromId = (id: BandId): BandKey => {
-  const key = BAND_KEY_PREFIX + id;
+  // depending on who called this function, the bandId may or may not already
+  // be prefixed
+  const key = id.startsWith(BAND_KEY_PREFIX) ? id : BAND_KEY_PREFIX + id;
   return {
     pk: key,
     sk: key,
   };
 };
 
-const getBandFromBandRecord = (bandRecord: BandRecord): Band => ({
+export const getBandFromBandRecord = (bandRecord: BandRecord): Band => ({
   id: bandRecord.pk.slice(BAND_KEY_PREFIX.length),
   name: bandRecord.name,
   location: bandRecord.location,
@@ -52,7 +52,7 @@ const getBandFromBandRecord = (bandRecord: BandRecord): Band => ({
 
 export const createBand = async (bandCreateInput: BandCreateInput) => {
   try {
-    const band = getBandFromBandCreateInput(bandCreateInput);
+    const band = getBandFromCreateInput(bandCreateInput);
     await BandModel.create(getBandRecordFromBand(band));
     return band;
   } catch (e) {
@@ -71,5 +71,18 @@ export const fetchBandById = async (id: BandId) => {
     return getBandFromBandRecord(bandRecord);
   } catch (e) {
     throw new Error(`Failed to fetch band with id: ${id}`);
+  }
+};
+
+export const fetchBandsByIds = async (ids: BandId[]) => {
+  try {
+    const bandRecords = await BandModel.batchGet(
+      ids.map((id) => ({ ...getBandKeyFromId(id) })),
+    );
+    return bandRecords
+      .filter((record) => isBandRecord(record))
+      .map((record) => getBandFromBandRecord((record as unknown) as BandRecord));
+  } catch (e) {
+    throw new Error(e.message);
   }
 };

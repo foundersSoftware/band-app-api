@@ -9,22 +9,8 @@ export type BandName = string;
 export type BandMemberRole = string;
 export type Location = string;
 
-export interface UserCredentials {
+export interface UserCreateInput {
   email: Email;
-  password: Password;
-}
-
-export interface User {
-  email: Email;
-  password: Password;
-}
-
-export interface UserKey {
-  pk: PrefixedUserId;
-  sk: PrefixedUserId;
-}
-
-export interface UserRecord extends UserKey {
   password: Password;
 }
 
@@ -33,8 +19,36 @@ export interface BandCreateInput {
   location: Location;
 }
 
-export interface Band extends BandCreateInput {
+export interface BandMembership {
+  name: BandName;
+  location: Location;
   id: BandId;
+  role: BandMemberRole;
+  email: Email;
+}
+
+export interface User {
+  email: Email;
+  password: Password;
+  bands?: Band[];
+}
+
+export interface BandMember {
+  email: Email;
+  role: BandMemberRole;
+}
+
+export interface Band {
+  name: BandName;
+  location: Location;
+  id: BandId;
+  members?: User[];
+}
+
+export interface UserRecord {
+  pk: PrefixedUserId;
+  sk: PrefixedUserId;
+  password: Password;
 }
 
 export interface BandKey {
@@ -42,24 +56,17 @@ export interface BandKey {
   sk: PrefixedBandId;
 }
 
-export interface BandRecord extends BandKey {
+export interface BandRecord {
+  pk: PrefixedBandId;
+  sk: PrefixedBandId;
   name: BandName;
   location: Location;
 }
 
-export interface BandMembership {
-  bandName: BandName;
-  memberEmail: Email;
-  role: BandMemberRole;
-}
-
-export interface BandMembershipKey {
-  pk: PrefixedBandId;
-  sk: PrefixedUserId;
-}
-
-export interface BandMembershipRecord extends BandMembershipKey {
+export interface BandMembershipRecord {
   pk: PrefixedBandId;
   sk: PrefixedUserId;
   role: BandMemberRole;
+  name: BandName;
+  location: Location;
 }
