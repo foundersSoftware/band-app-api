@@ -14,17 +14,17 @@ import type {
 import { getUserFromRecord, isUserRecord } from "./user";
 
 const isBandMembershipRecord = (
-  document: unknown,
+  document: unknown
 ): document is BandMembershipRecord => {
   const record = document as BandMembershipRecord;
   return (
-    record.pk.startsWith(BAND_KEY_PREFIX)
-    && record.sk.startsWith(USER_KEY_PREFIX)
+    record.pk.startsWith(BAND_KEY_PREFIX) &&
+    record.sk.startsWith(USER_KEY_PREFIX)
   );
 };
 
 const getRecordFromBandMembership = (
-  membership: BandMembership,
+  membership: BandMembership
 ): BandMembershipRecord => ({
   pk: BAND_KEY_PREFIX + membership.id,
   sk: USER_KEY_PREFIX + membership.email,
@@ -36,7 +36,7 @@ const getRecordFromBandMembership = (
 export const addUserToBand = async (
   email: Email,
   bandId: BandId,
-  role: BandMemberRole,
+  role: BandMemberRole
 ) => {
   try {
     const band = await fetchBandById(bandId);
@@ -47,7 +47,7 @@ export const addUserToBand = async (
         id: band.id,
         role,
         email,
-      }),
+      })
     );
   } catch (e) {
     throw new Error(e.message);
@@ -55,20 +55,21 @@ export const addUserToBand = async (
 };
 
 const validateMembershipRecords = (records: any[]): BandMembershipRecord[] => {
-  const validatedMembershipRecords = records.filter((record) => isBandMembershipRecord(record));
+  const validatedMembershipRecords = records.filter((record) =>
+    isBandMembershipRecord(record)
+  );
   return (validatedMembershipRecords as unknown) as BandMembershipRecord[];
 };
 
 export const fetchUsersByBand = async (band: Band): Promise<User[]> => {
   try {
-    // i will have to circle back and improve this performance later
     const membershipRecords = await BandModel.query({
       pk: { eq: BAND_KEY_PREFIX + band.id },
       sk: { beginsWith: USER_KEY_PREFIX },
     }).exec();
 
     const validatedMembershipRecords = validateMembershipRecords(
-      membershipRecords,
+      membershipRecords
     );
 
     const keys = validatedMembershipRecords.map((record) => {
@@ -99,7 +100,7 @@ export const fetchBandsByUser = async (user: User) => {
       .using("skGlobalIndex")
       .exec();
     const validatedMembershipRecords = validateMembershipRecords(
-      bandMembershipRecords,
+      bandMembershipRecords
     );
 
     const bandIds = validatedMembershipRecords.map((record) => record.pk);

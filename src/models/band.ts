@@ -10,12 +10,12 @@ import type {
   PrefixedBandId,
 } from "./types";
 
-export const isBandRecord = (document: unknown): document is BandRecord => {
+const isBandRecord = (document: unknown): document is BandRecord => {
   const band = document as BandRecord;
   return (
-    band.pk !== undefined
-    && band.pk.startsWith(BAND_KEY_PREFIX)
-    && band.sk === band.pk
+    band.pk !== undefined &&
+    band.pk.startsWith(BAND_KEY_PREFIX) &&
+    band.sk === band.pk
   );
 };
 
@@ -44,7 +44,7 @@ const getBandKeyFromId = (id: BandId): BandKey => {
   };
 };
 
-export const getBandFromBandRecord = (bandRecord: BandRecord): Band => ({
+const getBandFromBandRecord = (bandRecord: BandRecord): Band => ({
   id: bandRecord.pk.slice(BAND_KEY_PREFIX.length),
   name: bandRecord.name,
   location: bandRecord.location,
@@ -77,11 +77,13 @@ export const fetchBandById = async (id: BandId) => {
 export const fetchBandsByIds = async (ids: BandId[]) => {
   try {
     const bandRecords = await BandModel.batchGet(
-      ids.map((id) => ({ ...getBandKeyFromId(id) })),
+      ids.map((id) => ({ ...getBandKeyFromId(id) }))
     );
     return bandRecords
       .filter((record) => isBandRecord(record))
-      .map((record) => getBandFromBandRecord((record as unknown) as BandRecord));
+      .map((record) =>
+        getBandFromBandRecord((record as unknown) as BandRecord)
+      );
   } catch (e) {
     throw new Error(e.message);
   }
