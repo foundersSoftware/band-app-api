@@ -11,14 +11,10 @@ export const Band = objectType({
       type: "User",
       list: true,
       resolve: async (parent) => {
-        // todo: fix this typescript stuff.  Probably need to take another
-        // look at gql backing types
-        // @ts-ignore
-        if (parent.members) {
-          // @ts-ignore
-          return parent.members;
+        if (!parent.members) {
+          return fetchUsersByBand(parent);
         }
-        return fetchUsersByBandId(parent.id);
+        return parent.members;
       },
     });
   },
