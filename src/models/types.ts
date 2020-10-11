@@ -33,11 +33,6 @@ export interface User {
   bands?: Band[];
 }
 
-export interface BandMember {
-  email: Email;
-  role: BandMemberRole;
-}
-
 export interface Band {
   name: BandName;
   location: Location;
@@ -45,28 +40,7 @@ export interface Band {
   members?: User[];
 }
 
-export interface UserRecord {
-  pk: PrefixedUserId;
-  sk: PrefixedUserId;
-  password: Password;
-}
-
 export interface BandKey {
   pk: PrefixedBandId;
   sk: PrefixedBandId;
-}
-
-export interface BandRecord {
-  pk: PrefixedBandId;
-  sk: PrefixedBandId;
-  name: BandName;
-  location: Location;
-}
-
-export interface BandMembershipRecord {
-  pk: PrefixedBandId;
-  sk: PrefixedUserId;
-  role: BandMemberRole;
-  name: BandName;
-  location: Location;
 }
