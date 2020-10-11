@@ -1,6 +1,4 @@
-import { Document } from "dynamoose/dist/Document";
-
-export const BaseSchema = {
+const BaseSchema = {
   pk: {
     type: String,
     hashKey: true,
@@ -15,8 +13,4 @@ export const BaseSchema = {
   },
 };
 
-export interface BaseDocument extends Document {
-  pk: string;
-  sk: string;
-}
-
+export default BaseSchema;

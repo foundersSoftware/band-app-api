@@ -1,35 +1,30 @@
 import bcrypt from "bcrypt";
-import { UserDocument, UserModel } from "../db";
-import { USER_KEY_PREFIX } from "./constants";
+
+import { UserDocument, UserModel, getUserKeyFromId } from "../db";
 import type { Email, UserCreateInput, User } from "./types";
 
 const getUserFromRecord = (userRecord: UserDocument): User => {
-  const email = userRecord.pk.slice(USER_KEY_PREFIX.length);
+  const email = userRecord.pk;
   return {
     email,
     password: userRecord.password,
   };
 };
 
-const getUserFromCreateInput = (createInput: UserCreateInput): User => createInput;
+const getUserFromCreateInput = (createInput: UserCreateInput): User =>
+  createInput;
 
-const getRecordFromUser = (model: User): UserDocument => new UserModel({
-  pk: USER_KEY_PREFIX + model.email,
-  sk: USER_KEY_PREFIX + model.email,
-  password: bcrypt.hashSync(model.password, 3),
-});
-
-const getUserKeyFromEmail = (email: Email) => {
-  const key = USER_KEY_PREFIX + email;
-  return {
-    pk: key,
-    sk: key,
-  };
-};
+const getRecordFromUser = (model: User): UserDocument =>
+  new UserModel({
+    pk: model.email,
+    sk: model.email,
+    password: bcrypt.hashSync(model.password, 3),
+  });
 
 export const fetchUserByEmail = async (email: Email): Promise<User> => {
   try {
-    const userRecord = await UserModel.get(getUserKeyFromEmail(email));
+    const userKey = getUserKeyFromId(email);
+    const userRecord = await UserModel.get({ ...userKey });
     return getUserFromRecord(userRecord);
   } catch (e) {
     throw new Error(`Failed to fetch user with email: ${email}`);
@@ -38,7 +33,7 @@ export const fetchUserByEmail = async (email: Email): Promise<User> => {
 
 export const fetchUsersByEmails = async (emails: Email[]): Promise<User[]> => {
   try {
-    const keys = emails.map((email) => getUserKeyFromEmail(email));
+    const keys = emails.map((email) => ({ ...getUserKeyFromId(email) }));
     const records = await UserModel.batchGet(keys);
     return records.map((record) => getUserFromRecord(record));
   } catch (e) {

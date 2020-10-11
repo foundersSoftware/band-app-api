@@ -1,37 +1,21 @@
 import shortid from "shortid";
-import { BandDocument, BandModel } from "../db";
-import { BAND_KEY_PREFIX } from "./constants";
-import type {
-  Band, BandCreateInput, BandId, BandKey,
-} from "./types";
+import { BandDocument, BandModel, getBandKeyFromId } from "../db";
+import type { Band, BandCreateInput, BandId } from "./types";
 
-const getBandRecordFromBand = (band: Band): BandDocument => {
-  const key = BAND_KEY_PREFIX + band.id;
-  return new BandModel({
-    pk: key,
-    sk: key,
-    name: band.name,
-    location: band.location,
-  });
-};
+const getBandRecordFromBand = (band: Band): BandDocument => new BandModel({
+  pk: band.id,
+  sk: band.id,
+  name: band.name,
+  location: band.location,
+});
 
 const getBandFromCreateInput = (band: BandCreateInput): Band => ({
   id: shortid.generate(),
   ...band,
 });
 
-const getBandKeyFromId = (id: BandId): BandKey => {
-  // depending on who called this function, the bandId may or may not already
-  // be prefixed
-  const key = id.startsWith(BAND_KEY_PREFIX) ? id : BAND_KEY_PREFIX + id;
-  return {
-    pk: key,
-    sk: key,
-  };
-};
-
 const getBandFromBandRecord = (bandRecord: BandDocument): Band => ({
-  id: bandRecord.pk.slice(BAND_KEY_PREFIX.length),
+  id: bandRecord.pk,
   name: bandRecord.name,
   location: bandRecord.location,
 });
