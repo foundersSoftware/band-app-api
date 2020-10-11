@@ -11,15 +11,13 @@ const getUserFromRecord = (userRecord: UserDocument): User => {
   };
 };
 
-const getUserFromCreateInput = (createInput: UserCreateInput): User =>
-  createInput;
+const getUserFromCreateInput = (createInput: UserCreateInput): User => createInput;
 
-const getRecordFromUser = (model: User): UserDocument =>
-  new UserModel({
-    pk: model.email,
-    sk: model.email,
-    password: bcrypt.hashSync(model.password, 3),
-  });
+const getRecordFromUser = (model: User): UserDocument => new UserModel({
+  pk: model.email,
+  sk: model.email,
+  password: bcrypt.hashSync(model.password, 3),
+});
 
 export const fetchUserByEmail = async (email: Email): Promise<User> => {
   try {
