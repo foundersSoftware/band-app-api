@@ -1,9 +1,21 @@
 import dynamoose from "dynamoose";
-import { BaseSchema, BaseDocument } from "./BaseSchema";
+
+import BaseSchema from "./BaseSchema";
+import type { Key, BaseDocument } from "./types";
+import { BAND_KEY_PREFIX } from "./constants";
 
 const BandSchema = new dynamoose.Schema(
   {
-    ...BaseSchema,
+    pk: {
+      ...BaseSchema.pk,
+      get: (value) => (value as string).slice(BAND_KEY_PREFIX.length),
+      set: (value) => BAND_KEY_PREFIX + value,
+    },
+    sk: {
+      ...BaseSchema.sk,
+      get: (value) => (value as string).slice(BAND_KEY_PREFIX.length),
+      set: (value) => BAND_KEY_PREFIX + value,
+    },
     name: {
       type: String,
     },
@@ -31,4 +43,9 @@ export const BandModel = dynamoose.model<BandDocument>("BandApp", BandSchema, {
       frequency: 1000,
     },
   },
+});
+
+export const getBandKeyFromId = (id: string): Key => ({
+  pk: BAND_KEY_PREFIX + id,
+  sk: BAND_KEY_PREFIX + id,
 });
