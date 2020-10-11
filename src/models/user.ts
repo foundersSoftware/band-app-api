@@ -38,6 +38,9 @@ export const fetchUserByEmail = async (email: Email): Promise<User> => {
 
 export const fetchUsersByEmails = async (emails: Email[]): Promise<User[]> => {
   try {
+    if (!emails.length) {
+      return [];
+    }
     const keys = emails.map((email) => getUserKeyFromEmail(email));
     const records = await UserModel.batchGet(keys);
     return records.map((record) => getUserFromRecord(record));

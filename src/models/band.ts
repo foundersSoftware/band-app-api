@@ -58,6 +58,9 @@ export const fetchBandById = async (id: BandId) => {
 
 export const fetchBandsByIds = async (ids: BandId[]) => {
   try {
+    if (!ids.length) {
+      return [];
+    }
     const bandRecords = await BandModel.batchGet(
       ids.map((id) => ({ ...getBandKeyFromId(id) })),
     );
