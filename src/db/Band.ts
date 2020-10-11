@@ -1,29 +1,13 @@
 import dynamoose from "dynamoose";
+import { BaseSchema, BaseDocument } from "./BaseSchema";
 
 const BandSchema = new dynamoose.Schema(
   {
-    pk: {
-      type: String,
-      hashKey: true,
-    },
-    sk: {
-      type: String,
-      rangeKey: true,
-      index: {
-        global: true,
-        rangeKey: "pk",
-      },
-    },
+    ...BaseSchema,
     name: {
       type: String,
     },
     location: {
-      type: String,
-    },
-    password: {
-      type: String,
-    },
-    role: {
       type: String,
     },
   },
@@ -32,7 +16,12 @@ const BandSchema = new dynamoose.Schema(
   },
 );
 
-const BandModel = dynamoose.model("Band", BandSchema, {
+export interface BandDocument extends BaseDocument {
+  name: string;
+  location: string;
+}
+
+export const BandModel = dynamoose.model<BandDocument>("BandApp", BandSchema, {
   create: process.env.NODE_ENV === "development",
   waitForActive: {
     enabled: process.env.NODE_ENV === "development",
@@ -43,5 +32,3 @@ const BandModel = dynamoose.model("Band", BandSchema, {
     },
   },
 });
-
-export default BandModel;

@@ -1,32 +1,18 @@
 import shortid from "shortid";
-import { BandModel } from "../db";
+import { BandDocument, BandModel } from "../db";
 import { BAND_KEY_PREFIX } from "./constants";
 import type {
-  Band,
-  BandCreateInput,
-  BandId,
-  BandKey,
-  BandRecord,
-  PrefixedBandId,
+  Band, BandCreateInput, BandId, BandKey,
 } from "./types";
 
-const isBandRecord = (document: unknown): document is BandRecord => {
-  const band = document as BandRecord;
-  return (
-    band.pk !== undefined &&
-    band.pk.startsWith(BAND_KEY_PREFIX) &&
-    band.sk === band.pk
-  );
-};
-
-const getBandRecordFromBand = (band: Band): BandRecord => {
+const getBandRecordFromBand = (band: Band): BandDocument => {
   const key = BAND_KEY_PREFIX + band.id;
-  return {
+  return new BandModel({
     pk: key,
     sk: key,
     name: band.name,
     location: band.location,
-  };
+  });
 };
 
 const getBandFromCreateInput = (band: BandCreateInput): Band => ({
@@ -44,7 +30,7 @@ const getBandKeyFromId = (id: BandId): BandKey => {
   };
 };
 
-const getBandFromBandRecord = (bandRecord: BandRecord): Band => ({
+const getBandFromBandRecord = (bandRecord: BandDocument): Band => ({
   id: bandRecord.pk.slice(BAND_KEY_PREFIX.length),
   name: bandRecord.name,
   location: bandRecord.location,
@@ -53,7 +39,8 @@ const getBandFromBandRecord = (bandRecord: BandRecord): Band => ({
 export const createBand = async (bandCreateInput: BandCreateInput) => {
   try {
     const band = getBandFromCreateInput(bandCreateInput);
-    await BandModel.create(getBandRecordFromBand(band));
+    const bandRecord = getBandRecordFromBand(band);
+    await bandRecord.save();
     return band;
   } catch (e) {
     throw new Error(`Failed to create band with name: ${bandCreateInput.name}`);
@@ -63,11 +50,6 @@ export const createBand = async (bandCreateInput: BandCreateInput) => {
 export const fetchBandById = async (id: BandId) => {
   try {
     const bandRecord = await BandModel.get({ ...getBandKeyFromId(id) });
-
-    if (!isBandRecord(bandRecord)) {
-      throw new Error("document is not a BandRecord");
-    }
-
     return getBandFromBandRecord(bandRecord);
   } catch (e) {
     throw new Error(`Failed to fetch band with id: ${id}`);
@@ -77,13 +59,9 @@ export const fetchBandById = async (id: BandId) => {
 export const fetchBandsByIds = async (ids: BandId[]) => {
   try {
     const bandRecords = await BandModel.batchGet(
-      ids.map((id) => ({ ...getBandKeyFromId(id) }))
+      ids.map((id) => ({ ...getBandKeyFromId(id) })),
     );
-    return bandRecords
-      .filter((record) => isBandRecord(record))
-      .map((record) =>
-        getBandFromBandRecord((record as unknown) as BandRecord)
-      );
+    return bandRecords.map((record: BandDocument) => getBandFromBandRecord(record));
   } catch (e) {
     throw new Error(e.message);
   }
