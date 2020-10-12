@@ -7,6 +7,7 @@ type Band {
   id: String!
   members: [User!]!
   name: String!
+  songs: [Song!]!
 }
 
 input BandAddMemberInput {
@@ -40,6 +41,10 @@ type Query {
 }
 
 type Song {
+  """Costs a Query, if you just need the band Id, use bandId instead!"""
+  band: Band!
+  bandId: String!
+  id: String!
   title: String!
 }
 

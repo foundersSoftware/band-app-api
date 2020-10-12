@@ -98,6 +98,9 @@ export interface NexusGenFieldTypes {
     me: NexusGenRootTypes['User']; // User!
   }
   Song: { // field return type
+    band: NexusGenRootTypes['Band']; // Band!
+    bandId: string; // String!
+    id: string; // String!
     title: string; // String!
   }
   User: { // field return type

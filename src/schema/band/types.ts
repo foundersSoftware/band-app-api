@@ -1,4 +1,5 @@
 import { inputObjectType, objectType } from "@nexus/schema";
+import { fetchSongsByBand } from "../../models/song";
 import { fetchUsersByBand } from "../../models/bandMembership";
 import { fetchBandDetails } from "../../models/band";
 
@@ -25,6 +26,11 @@ export const Band = objectType({
         }
         return parent.members;
       },
+    });
+    t.field("songs", {
+      type: "Song",
+      list: true,
+      resolve: async (parent) => fetchSongsByBand(parent.id),
     });
   },
 });

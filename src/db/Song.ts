@@ -16,9 +16,7 @@ const SongSchema = new dynamoose.Schema(
       get: (value) => (value as string).slice(SONG_KEY_PREFIX.length),
       set: (value) => SONG_KEY_PREFIX + value,
     },
-    name: {
-      type: String,
-    },
+    songTitle: String,
   },
   {
     timestamps: true,
@@ -26,7 +24,7 @@ const SongSchema = new dynamoose.Schema(
 );
 
 export interface SongDocument extends BaseDocument {
-  name: string;
+  songTitle: string;
 }
 
 export const SongModel = dynamoose.model<SongDocument>("BandApp", SongSchema, {

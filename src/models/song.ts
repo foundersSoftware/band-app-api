@@ -4,8 +4,8 @@ import type { SongCreateInput, Song, BandId } from "./types";
 
 const getSongFromRecord = (songRecord: SongDocument): Song => ({
   id: songRecord.sk,
+  title: songRecord.songTitle,
   bandId: songRecord.pk,
-  title: songRecord.name,
 });
 
 const getSongFromCreateInput = (createInput: SongCreateInput): Song => ({
@@ -13,28 +13,29 @@ const getSongFromCreateInput = (createInput: SongCreateInput): Song => ({
   ...createInput,
 });
 
-const getRecordFromSong = (model: Song): SongDocument =>
-  new SongModel({
-    pk: model.bandId,
-    sk: model.id,
-    name: model.title,
-  });
+const getRecordFromSong = (model: Song): SongDocument => new SongModel({
+  pk: model.bandId,
+  sk: model.id,
+  songTitle: model.title,
+});
 
-export const createSong = async (song: SongCreateInput): Promise<Song> => {
+export const createSong = async (
+  createInput: SongCreateInput,
+): Promise<Song> => {
   try {
-    const songModel = getSongFromCreateInput(song);
-    const songRecord = getRecordFromSong(songModel);
+    const song = getSongFromCreateInput(createInput);
+    const songRecord = getRecordFromSong(song);
     await songRecord.save();
-    return songModel;
+    return song;
   } catch (e) {
-    throw new Error(`Failed to create song with title: ${song.title}`);
+    throw new Error(`Failed to create song with title: ${createInput.title}`);
   }
 };
 
 export const fetchSongsByBand = async (bandId: BandId) => {
   try {
     const songRecords = await SongModel.query(
-      getSongsByBandQueryKey(bandId)
+      getSongsByBandQueryKey(bandId),
     ).exec();
     return songRecords.map((record) => getSongFromRecord(record));
   } catch (e) {
