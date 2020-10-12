@@ -21,23 +21,33 @@ export interface BandCreateInput {
 
 export interface BandMembership {
   bandName: BandName;
-  bandLocation: Location;
   bandId: BandId;
   userRole: BandMemberRole;
   userEmail: Email;
 }
 
+export interface UserDetails {}
+
 export interface User {
   email: Email;
   password: Password;
   bands?: Band[];
+  details?: UserDetails;
+}
+
+export interface BandDetails {
+  location: Location;
 }
 
 export interface Band {
   name: BandName;
-  location: Location;
   id: BandId;
   members?: User[];
+  details?: BandDetails;
+}
+
+export interface DetailedBand extends Band {
+  details: BandDetails;
 }
 
 export interface BandKey {

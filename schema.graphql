@@ -3,8 +3,8 @@
 
 
 type Band {
+  details: BandDetails!
   id: String!
-  location: String!
   members: [User!]!
   name: String!
 }
@@ -18,6 +18,10 @@ input BandAddMemberInput {
 input BandCreateInput {
   location: String!
   name: String!
+}
+
+type BandDetails {
+  location: String!
 }
 
 type Mutation {

@@ -32,13 +32,11 @@ const getRecordFromBandMembership = (
   sk: membership.userEmail,
   role: membership.userRole,
   bandName: membership.bandName,
-  bandLocation: membership.bandLocation,
 });
 
 const getBandFromMembershipRecord = (record: BandMembershipDocument): Band => ({
   id: record.pk,
   name: record.bandName,
-  location: record.bandLocation,
 });
 
 const getUserFromMembershipRecord = (record: BandMembershipDocument): User => ({
@@ -57,7 +55,6 @@ export const addUserToBand = async (
     const bandMembershipRecord = getRecordFromBandMembership({
       bandId: band.id,
       bandName: band.name,
-      bandLocation: band.location,
       userEmail: email,
       userRole: role,
     });

@@ -1,23 +1,30 @@
 import shortid from "shortid";
 import { BandDocument, BandModel, getBandKeyFromId } from "../db";
-import type { Band, BandCreateInput, BandId } from "./types";
+import type {
+  Band, BandCreateInput, BandId, DetailedBand,
+} from "./types";
 
 const getBandRecordFromBand = (band: Band): BandDocument => new BandModel({
   pk: band.id,
   sk: band.id,
   bandName: band.name,
-  bandLocation: band.location,
+  bandLocation: band.details?.location,
 });
 
 const getBandFromCreateInput = (band: BandCreateInput): Band => ({
   id: shortid.generate(),
-  ...band,
+  name: band.name,
+  details: {
+    location: band.location,
+  },
 });
 
-const getBandFromBandRecord = (bandRecord: BandDocument): Band => ({
+const getBandFromBandRecord = (bandRecord: BandDocument): DetailedBand => ({
   id: bandRecord.pk,
   name: bandRecord.bandName,
-  location: bandRecord.bandLocation,
+  details: {
+    location: bandRecord.bandLocation,
+  },
 });
 
 export const createBand = async (bandCreateInput: BandCreateInput) => {
@@ -52,4 +59,13 @@ export const fetchBandsByIds = async (ids: BandId[]) => {
   } catch (e) {
     throw new Error(e.message);
   }
+};
+
+export const fetchBandDetails = async (band: Band) => {
+  // it is possible (and likely) that the details are already available
+  if (band.details) {
+    return band.details;
+  }
+  const detailedBand = await fetchBandById(band.id);
+  return detailedBand.details;
 };

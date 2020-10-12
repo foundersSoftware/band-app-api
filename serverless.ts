@@ -6,6 +6,7 @@ const serverlessConfiguration: Serverless = {
   service: "band-app",
   provider: {
     name: "aws",
+    profile: "founders",
     runtime: "nodejs12.x",
     region: "us-west-2",
     iamRoleStatements: [
@@ -15,9 +16,11 @@ const serverlessConfiguration: Serverless = {
           "dynamodb:Query",
           "dynamodb:Scan",
           "dynamodb:GetItem",
+          "dynamodb:BatchGetItem",
           "dynamodb:PutItem",
+          "dynamodb:BatchPutItem",
         ],
-        Resource: "arn:aws:dynamodb:us-west-2:254249882000:table/User",
+        Resource: "arn:aws:dynamodb:us-west-2:646255862622:table/BandApp*",
       },
     ],
   },

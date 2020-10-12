@@ -47,6 +47,7 @@ export interface NexusGenScalars {
 
 export interface NexusGenRootTypes {
   Band: models.Band;
+  BandDetails: models.BandDetails;
   Mutation: {};
   Query: {};
   User: models.User;
@@ -69,10 +70,13 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 
 export interface NexusGenFieldTypes {
   Band: { // field return type
+    details: NexusGenRootTypes['BandDetails']; // BandDetails!
     id: string; // String!
-    location: string; // String!
     members: NexusGenRootTypes['User'][]; // [User!]!
     name: string; // String!
+  }
+  BandDetails: { // field return type
+    location: string; // String!
   }
   Mutation: { // field return type
     addOneUserToOneBand: string; // String!
@@ -124,7 +128,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Band" | "Mutation" | "Query" | "User" | "UserToken";
+export type NexusGenObjectNames = "Band" | "BandDetails" | "Mutation" | "Query" | "User" | "UserToken";
 
 export type NexusGenInputNames = "BandAddMemberInput" | "BandCreateInput" | "UserCreateInput" | "UserCredentialsType";
 
