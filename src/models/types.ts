@@ -8,6 +8,8 @@ export type PrefixedBandId = string;
 export type BandName = string;
 export type BandMemberRole = string;
 export type Location = string;
+export type SongId = string;
+export type SongTitle = string;
 
 export interface UserCreateInput {
   email: Email;
@@ -37,10 +39,22 @@ export interface Band {
   name: BandName;
   location: Location;
   id: BandId;
+  songs?: Song[];
   members?: User[];
 }
 
 export interface BandKey {
   pk: PrefixedBandId;
   sk: PrefixedBandId;
+}
+
+export interface SongCreateInput {
+  bandId: BandId;
+  title: SongTitle;
+}
+
+export interface Song {
+  id: SongId;
+  bandId: BandId;
+  title: SongTitle;
 }

@@ -22,6 +22,11 @@ const getRecordFromUser = (model: User): UserDocument => new UserModel({
 export const fetchUserByEmail = async (email: Email): Promise<User> => {
   try {
     const userKey = getUserKeyFromId(email);
+    const userRecordRequest = await UserModel.get(
+      { ...userKey },
+      { return: "request" },
+    );
+    console.log(userRecordRequest);
     const userRecord = await UserModel.get({ ...userKey });
     return getUserFromRecord(userRecord);
   } catch (e) {
@@ -36,8 +41,23 @@ export const fetchUsersByEmails = async (emails: Email[]): Promise<User[]> => {
     }
 
     const keys = emails.map((email) => ({ ...getUserKeyFromId(email) }));
+    // const keys = emails.map((email) => ({
+    // pk: { eq: email },
+    // sk: { eq: email },
+    // }));
+    // console.log(keys);
+    const request = UserModel.batchGet(keys, { return: "request" });
     const records = await UserModel.batchGet(keys);
-    return records.map((record) => getUserFromRecord(record));
+    // const records = await UserModel.query(keys).exec();
+    console.log(records);
+
+    // stop using batchGet DONT do this in production
+    // const records = [await UserModel.get({ ...getUserKeyFromId(emails[0]) })];
+
+    // console.log(request.RequestItems.BandApp.Keys);
+    // @ts-ignore
+    return records;
+    // return records.map((record) => getUserFromRecord(record));
   } catch (e) {
     throw new Error(e.message);
   }
