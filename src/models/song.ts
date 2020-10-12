@@ -1,6 +1,13 @@
 import shortid from "shortid";
-import { SongDocument, SongModel, getSongsByBandQueryKey } from "../db";
-import type { SongCreateInput, Song, BandId } from "./types";
+import {
+  SongDocument,
+  SongModel,
+  getSongsByBandQueryKey,
+  getSongByIdKey,
+} from "../db";
+import type {
+  SongCreateInput, Song, BandId, SongId,
+} from "./types";
 
 const getSongFromRecord = (songRecord: SongDocument): Song => ({
   id: songRecord.sk,
@@ -40,5 +47,14 @@ export const fetchSongsByBand = async (bandId: BandId) => {
     return songRecords.map((record) => getSongFromRecord(record));
   } catch (e) {
     throw new Error(`Failed to fetch songs for band with id: ${bandId}`);
+  }
+};
+
+export const fetchSongById = async (songId: SongId, bandId: BandId) => {
+  try {
+    const songRecord = await SongModel.get(getSongByIdKey(songId, bandId));
+    return getSongFromRecord(songRecord);
+  } catch (e) {
+    throw new Error(`Failed to fetch song with id: ${songId}`);
   }
 };
