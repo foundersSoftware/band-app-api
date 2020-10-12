@@ -5,8 +5,8 @@ import type { Band, BandCreateInput, BandId } from "./types";
 const getBandRecordFromBand = (band: Band): BandDocument => new BandModel({
   pk: band.id,
   sk: band.id,
-  name: band.name,
-  location: band.location,
+  bandName: band.name,
+  bandLocation: band.location,
 });
 
 const getBandFromCreateInput = (band: BandCreateInput): Band => ({
@@ -16,8 +16,8 @@ const getBandFromCreateInput = (band: BandCreateInput): Band => ({
 
 const getBandFromBandRecord = (bandRecord: BandDocument): Band => ({
   id: bandRecord.pk,
-  name: bandRecord.name,
-  location: bandRecord.location,
+  name: bandRecord.bandName,
+  location: bandRecord.bandLocation,
 });
 
 export const createBand = async (bandCreateInput: BandCreateInput) => {

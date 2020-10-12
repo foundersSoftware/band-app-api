@@ -20,11 +20,11 @@ export interface BandCreateInput {
 }
 
 export interface BandMembership {
-  name: BandName;
-  location: Location;
-  id: BandId;
-  role: BandMemberRole;
-  email: Email;
+  bandName: BandName;
+  bandLocation: Location;
+  bandId: BandId;
+  userRole: BandMemberRole;
+  userEmail: Email;
 }
 
 export interface User {

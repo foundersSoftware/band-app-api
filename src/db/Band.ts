@@ -16,10 +16,10 @@ const BandSchema = new dynamoose.Schema(
       get: (value) => (value as string).slice(BAND_KEY_PREFIX.length),
       set: (value) => BAND_KEY_PREFIX + value,
     },
-    name: {
+    bandName: {
       type: String,
     },
-    location: {
+    bandLocation: {
       type: String,
     },
   },
@@ -29,8 +29,8 @@ const BandSchema = new dynamoose.Schema(
 );
 
 export interface BandDocument extends BaseDocument {
-  name: string;
-  location: string;
+  bandName: string;
+  bandLocation: string;
 }
 
 export const BandModel = dynamoose.model<BandDocument>("BandApp", BandSchema, {

@@ -16,6 +16,8 @@ const BandMembershipSchema = new dynamoose.Schema(
       get: (value) => (value as string).slice(USER_KEY_PREFIX.length),
       set: (value) => USER_KEY_PREFIX + value,
     },
+    bandName: String,
+    bandLocation: String,
     role: {
       type: String,
     },
@@ -26,6 +28,8 @@ const BandMembershipSchema = new dynamoose.Schema(
 );
 
 export interface BandMembershipDocument extends BaseDocument {
+  bandName: string;
+  bandLocation: string;
   role: string;
 }
 
