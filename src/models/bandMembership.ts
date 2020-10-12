@@ -4,7 +4,7 @@ import {
   getBandMembershipKeyFromBandId,
   getBandMembershipKeyFromUserId,
 } from "../db";
-import { fetchBandById, fetchBandsByIds } from "./band";
+import { fetchBandById } from "./band";
 // import { BAND_KEY_PREFIX, USER_KEY_PREFIX } from "./constants";
 import type {
   BandMemberRole,
@@ -14,7 +14,6 @@ import type {
   Email,
   Band,
 } from "./types";
-import { fetchUsersByEmails } from "./user";
 
 // const getBandMembershipKeyFromBandId = (bandId: BandId): Object => ({
 // pk: BAND_KEY_PREFIX + bandId,
@@ -29,9 +28,21 @@ import { fetchUsersByEmails } from "./user";
 const getRecordFromBandMembership = (
   membership: BandMembership,
 ): BandMembershipDocument => new BandMembershipModel({
-  pk: membership.id,
-  sk: membership.email,
-  role: membership.role,
+  pk: membership.bandId,
+  sk: membership.userEmail,
+  role: membership.userRole,
+  bandName: membership.bandName,
+});
+
+const getBandFromMembershipRecord = (record: BandMembershipDocument): Band => ({
+  id: record.pk,
+  name: record.bandName,
+});
+
+const getUserFromMembershipRecord = (record: BandMembershipDocument): User => ({
+  email: record.sk,
+  // password is required, but can (and should) be empty
+  password: "",
 });
 
 export const addUserToBand = async (
@@ -42,11 +53,10 @@ export const addUserToBand = async (
   try {
     const band = await fetchBandById(bandId);
     const bandMembershipRecord = getRecordFromBandMembership({
-      id: band.id,
-      name: band.name,
-      location: band.location,
-      email,
-      role,
+      bandId: band.id,
+      bandName: band.name,
+      userEmail: email,
+      userRole: role,
     });
     await bandMembershipRecord.save();
   } catch (e) {
@@ -60,8 +70,8 @@ export const fetchUsersByBand = async (band: Band): Promise<User[]> => {
       getBandMembershipKeyFromBandId(band.id),
     ).exec();
 
-    const userEmails = membershipRecords.map((record) => record.sk);
-    return fetchUsersByEmails(userEmails);
+    const users = membershipRecords.map((record) => getUserFromMembershipRecord(record));
+    return users;
   } catch (e) {
     throw new Error(e.message);
   }
@@ -69,7 +79,7 @@ export const fetchUsersByBand = async (band: Band): Promise<User[]> => {
 
 export const fetchBandsByUser = async (user: User) => {
   try {
-    const bandMembershipRecords = await BandMembershipModel.query(
+    const membershipRecords = await BandMembershipModel.query(
       getBandMembershipKeyFromUserId(user.email),
     )
       // this is the secret sauce of single-table relationships
@@ -77,11 +87,8 @@ export const fetchBandsByUser = async (user: User) => {
       .using("skGlobalIndex")
       .exec();
 
-    const bandIds = bandMembershipRecords.map(
-      (record: BandMembershipDocument) => record.pk,
-    );
-
-    return fetchBandsByIds(bandIds);
+    const bands = membershipRecords.map((record: BandMembershipDocument) => getBandFromMembershipRecord(record));
+    return bands;
   } catch (e) {
     throw new Error(e.message);
   }
