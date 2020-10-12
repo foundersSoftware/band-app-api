@@ -23,14 +23,25 @@ input BandCreateInput {
 type Mutation {
   addOneUserToOneBand(membership: BandAddMemberInput!): String!
   createOneBand(band: BandCreateInput!): Band!
+  createOneSong(song: SongCreateInput!): Song!
   createOneUser(user: UserCreateInput!): UserToken
   login(credentials: UserCredentialsType!): UserToken
 }
 
 type Query {
   findOneUserByEmail(email: String!): User!
+  findSongsByBand(bandId: String!): [Song!]!
   getOneBandById(bandId: String!): Band!
   me: User!
+}
+
+type Song {
+  title: String!
+}
+
+input SongCreateInput {
+  bandId: String!
+  title: String!
 }
 
 type User {

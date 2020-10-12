@@ -24,6 +24,10 @@ export interface NexusGenInputs {
     location: string; // String!
     name: string; // String!
   }
+  SongCreateInput: { // input type
+    bandId: string; // String!
+    title: string; // String!
+  }
   UserCreateInput: { // input type
     email: string; // String!
     password: string; // String!
@@ -49,6 +53,7 @@ export interface NexusGenRootTypes {
   Band: models.Band;
   Mutation: {};
   Query: {};
+  Song: models.Song;
   User: models.User;
   UserToken: { // root type
     token: string; // String!
@@ -58,6 +63,7 @@ export interface NexusGenRootTypes {
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   BandAddMemberInput: NexusGenInputs['BandAddMemberInput'];
   BandCreateInput: NexusGenInputs['BandCreateInput'];
+  SongCreateInput: NexusGenInputs['SongCreateInput'];
   UserCreateInput: NexusGenInputs['UserCreateInput'];
   UserCredentialsType: NexusGenInputs['UserCredentialsType'];
   String: NexusGenScalars['String'];
@@ -77,13 +83,18 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     addOneUserToOneBand: string; // String!
     createOneBand: NexusGenRootTypes['Band']; // Band!
+    createOneSong: NexusGenRootTypes['Song']; // Song!
     createOneUser: NexusGenRootTypes['UserToken'] | null; // UserToken
     login: NexusGenRootTypes['UserToken'] | null; // UserToken
   }
   Query: { // field return type
     findOneUserByEmail: NexusGenRootTypes['User']; // User!
+    findSongsByBand: NexusGenRootTypes['Song'][]; // [Song!]!
     getOneBandById: NexusGenRootTypes['Band']; // Band!
     me: NexusGenRootTypes['User']; // User!
+  }
+  Song: { // field return type
+    title: string; // String!
   }
   User: { // field return type
     bands: NexusGenRootTypes['Band'][]; // [Band!]!
@@ -102,6 +113,9 @@ export interface NexusGenArgTypes {
     createOneBand: { // args
       band: NexusGenInputs['BandCreateInput']; // BandCreateInput!
     }
+    createOneSong: { // args
+      song: NexusGenInputs['SongCreateInput']; // SongCreateInput!
+    }
     createOneUser: { // args
       user: NexusGenInputs['UserCreateInput']; // UserCreateInput!
     }
@@ -112,6 +126,9 @@ export interface NexusGenArgTypes {
   Query: {
     findOneUserByEmail: { // args
       email: string; // String!
+    }
+    findSongsByBand: { // args
+      bandId: string; // String!
     }
     getOneBandById: { // args
       bandId: string; // String!
@@ -124,9 +141,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Band" | "Mutation" | "Query" | "User" | "UserToken";
+export type NexusGenObjectNames = "Band" | "Mutation" | "Query" | "Song" | "User" | "UserToken";
 
-export type NexusGenInputNames = "BandAddMemberInput" | "BandCreateInput" | "UserCreateInput" | "UserCredentialsType";
+export type NexusGenInputNames = "BandAddMemberInput" | "BandCreateInput" | "SongCreateInput" | "UserCreateInput" | "UserCredentialsType";
 
 export type NexusGenEnumNames = never;
 
