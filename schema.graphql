@@ -26,8 +26,10 @@ type BandDetails {
 }
 
 type Mutation {
+  addOneSongToSetlist(membership: SetlistAddSongInput!): String!
   addOneUserToOneBand(membership: BandAddMemberInput!): String!
   createOneBand(band: BandCreateInput!): Band!
+  createOneSetlist(setlist: SetlistCreateInput!): Setlist!
   createOneSong(song: SongCreateInput!): Song!
   createOneUser(user: UserCreateInput!): UserToken
   login(credentials: UserCredentialsType!): UserToken
@@ -35,9 +37,30 @@ type Mutation {
 
 type Query {
   findOneUserByEmail(email: String!): User!
+  findSetlistsByBand(bandId: String!): [Setlist!]!
   findSongsByBand(bandId: String!): [Song!]!
   getOneBandById(bandId: String!): Band!
   me: User!
+}
+
+type Setlist {
+  """Costs a Query, if you just need the band Id, use bandId instead!"""
+  band: Band!
+  bandId: String!
+  id: String!
+  songs: [Song!]!
+  title: String!
+}
+
+input SetlistAddSongInput {
+  bandId: String!
+  setlistId: String!
+  songId: String!
+}
+
+input SetlistCreateInput {
+  bandId: String!
+  title: String!
 }
 
 type Song {
