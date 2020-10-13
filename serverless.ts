@@ -6,6 +6,7 @@ const serverlessConfiguration: Serverless = {
   service: "band-app",
   provider: {
     name: "aws",
+    profile: "founders",
     runtime: "nodejs12.x",
     region: "us-west-2",
     iamRoleStatements: [
