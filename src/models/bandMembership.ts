@@ -5,7 +5,6 @@ import {
   getBandMembershipKeyFromUserId,
 } from "../db";
 import { fetchBandById } from "./band";
-// import { BAND_KEY_PREFIX, USER_KEY_PREFIX } from "./constants";
 import type {
   BandMemberRole,
   BandId,
@@ -14,16 +13,6 @@ import type {
   Email,
   Band,
 } from "./types";
-
-// const getBandMembershipKeyFromBandId = (bandId: BandId): Object => ({
-// pk: BAND_KEY_PREFIX + bandId,
-// sk: { beginsWith: USER_KEY_PREFIX },
-// });
-//
-// const getBandMembershipKeyFromUserId = (email: Email): Object => ({
-// pk: { beginsWith: BAND_KEY_PREFIX },
-// sk: USER_KEY_PREFIX + email,
-// });
 
 const getRecordFromBandMembership = (
   membership: BandMembership,
