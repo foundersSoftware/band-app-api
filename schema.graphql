@@ -69,6 +69,7 @@ type Song {
   band: Band!
   bandId: String!
   id: String!
+  setlists: [Setlist!]!
   title: String!
 }
 
