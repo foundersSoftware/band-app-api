@@ -2,18 +2,59 @@
 ### Do not make changes to this file directly
 
 
+type Band {
+  details: BandDetails!
+  id: String!
+  members: [User!]!
+  name: String!
+  songs: [Song!]!
+}
+
+input BandAddMemberInput {
+  bandId: String!
+  bandMemberRole: String!
+  userId: String!
+}
+
+input BandCreateInput {
+  location: String!
+  name: String!
+}
+
+type BandDetails {
+  location: String!
+}
+
 type Mutation {
+  addOneUserToOneBand(membership: BandAddMemberInput!): String!
+  createOneBand(band: BandCreateInput!): Band!
+  createOneSong(song: SongCreateInput!): Song!
   createOneUser(user: UserCreateInput!): UserToken
   login(credentials: UserCredentialsType!): UserToken
 }
 
 type Query {
+  findOneUserByEmail(email: String!): User!
+  findSongsByBand(bandId: String!): [Song!]!
+  getOneBandById(bandId: String!): Band!
   me: User!
-  userById(id: String!): User!
-  users(last: Int! = 5): [User!]!
+}
+
+type Song {
+  """Costs a Query, if you just need the band Id, use bandId instead!"""
+  band: Band!
+  bandId: String!
+  id: String!
+  title: String!
+}
+
+input SongCreateInput {
+  bandId: String!
+  title: String!
 }
 
 type User {
+  bands: [Band!]!
   email: String!
 }
 

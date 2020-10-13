@@ -1,10 +1,21 @@
 import { inputObjectType, objectType } from "@nexus/schema";
+import { fetchBandsByUser } from "../../models/bandMembership";
 
 export const User = objectType({
   name: "User",
   definition(t) {
     t.string("email", {
-      resolve: (user) => user.email,
+      resolve: (parent) => parent.email,
+    });
+    t.field("bands", {
+      type: "Band",
+      list: true,
+      resolve: async (parent) => {
+        if (!parent.bands) {
+          return fetchBandsByUser(parent);
+        }
+        return parent.bands;
+      },
     });
   },
 });
