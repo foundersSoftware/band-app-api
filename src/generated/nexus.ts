@@ -125,6 +125,7 @@ export interface NexusGenFieldTypes {
     band: NexusGenRootTypes['Band']; // Band!
     bandId: string; // String!
     id: string; // String!
+    setlists: NexusGenRootTypes['Setlist']; // Setlist!
     title: string; // String!
   }
   User: { // field return type

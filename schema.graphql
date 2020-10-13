@@ -7,6 +7,7 @@ type Band {
   id: String!
   members: [User!]!
   name: String!
+  setlists: [Setlist!]!
   songs: [Song!]!
 }
 
