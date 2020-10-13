@@ -10,6 +10,8 @@ export type BandMemberRole = string;
 export type Location = string;
 export type SongId = string;
 export type SongTitle = string;
+export type SetlistId = string;
+export type SetlistTitle = string;
 
 export interface UserCreateInput {
   email: Email;
@@ -67,4 +69,23 @@ export interface Song {
   id: SongId;
   bandId: BandId;
   title: SongTitle;
+}
+
+export interface SetlistCreateInput {
+  bandId: BandId;
+  title: SetlistTitle;
+}
+
+export interface Setlist {
+  id: SetlistId;
+  bandId: BandId;
+  title: SetlistTitle;
+}
+
+export interface SetlistMembership {
+  setlistId: SetlistId;
+  songId: SongId;
+  bandId: BandId;
+  songTitle: SongTitle;
+  setlistTitle: SetlistTitle;
 }

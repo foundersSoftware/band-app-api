@@ -2,6 +2,7 @@ import { inputObjectType, objectType } from "@nexus/schema";
 import { fetchSongsByBand } from "../../models/song";
 import { fetchUsersByBand } from "../../models/bandMembership";
 import { fetchBandDetails } from "../../models/band";
+import { fetchSetlistsByBand } from "../../models/setlist";
 
 export const Band = objectType({
   name: "Band",
@@ -31,6 +32,11 @@ export const Band = objectType({
       type: "Song",
       list: true,
       resolve: async (parent) => fetchSongsByBand(parent.id),
+    });
+    t.field("setlists", {
+      type: "Setlist",
+      list: true,
+      resolve: async (parent) => fetchSetlistsByBand(parent.id),
     });
   },
 });

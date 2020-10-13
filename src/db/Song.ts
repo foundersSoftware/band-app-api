@@ -39,6 +39,11 @@ export const SongModel = dynamoose.model<SongDocument>("BandApp", SongSchema, {
   },
 });
 
+export const getSongByIdKey = (songId: string, bandId: string) => ({
+  pk: BAND_KEY_PREFIX + bandId,
+  sk: SONG_KEY_PREFIX + songId,
+});
+
 export const getSongsByBandQueryKey = (id: string): Key => ({
   pk: BAND_KEY_PREFIX + id,
   sk: { beginsWith: SONG_KEY_PREFIX },
