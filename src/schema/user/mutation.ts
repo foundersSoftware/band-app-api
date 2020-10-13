@@ -1,11 +1,6 @@
 import { arg, mutationField } from "@nexus/schema";
-import model from "./model";
-import { isUser } from "./utils";
-import {
-  getTokenFromUser,
-  getUserTokenFromCredentials,
-  hashPassword,
-} from "../../auth";
+import { createUser, authenticateUserCredentials } from "../../models/user";
+import { getTokenFromUser } from "../../auth";
 
 export const createOneUser = mutationField("createOneUser", {
   type: "UserToken",
@@ -14,11 +9,12 @@ export const createOneUser = mutationField("createOneUser", {
     user: arg({ type: "UserCreateInput", required: true }),
   },
   resolve: async (_root, { user }) => {
-    const userDocument = await model.create({
-      ...user,
-      password: hashPassword(user.password),
-    });
-    return isUser(userDocument) ? getTokenFromUser(userDocument) : null;
+    try {
+      const persistedUser = await createUser(user);
+      return getTokenFromUser(persistedUser);
+    } catch (e) {
+      throw new Error(e.message);
+    }
   },
 });
 
@@ -28,7 +24,12 @@ export const login = mutationField("login", {
   args: {
     credentials: arg({ type: "UserCredentialsType", required: true }),
   },
-  resolve: async (_root, { credentials }) => getUserTokenFromCredentials(credentials.email, credentials.password),
-  // const userDocument = await model.get({ email: credentials.email });
-  // return isUser(userDocument) ? getTokenFromUser(userDocument) : null;
+  resolve: async (_root, { credentials }) => {
+    try {
+      const user = await authenticateUserCredentials(credentials);
+      return getTokenFromUser(user);
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  },
 });

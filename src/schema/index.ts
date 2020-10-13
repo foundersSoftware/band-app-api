@@ -4,13 +4,16 @@ import { config } from "dotenv";
 import { makeSchema } from "@nexus/schema";
 
 import * as userSchema from "./user";
+import * as bandSchema from "./band";
+import * as songSchema from "./song";
+import * as setlistSchema from "./setlist";
 
 config({
   path: "/home/cory/projects/node/portfolio-backend/.env/.env.development",
 });
 
 export default makeSchema({
-  types: [userSchema],
+  types: [userSchema, bandSchema, songSchema, setlistSchema],
   outputs: {
     schema: path.join(__dirname, "./../../schema.graphql"),
     typegen: path.join(__dirname, "./../generated/nexus.ts"),
@@ -20,11 +23,11 @@ export default makeSchema({
     sources: [
       {
         alias: "ctx",
-        source: path.join(__dirname, "./context.d.ts"),
+        source: path.join(__dirname, "../context.ts"),
       },
       {
-        alias: "dynamoose",
-        source: path.join(__dirname, "./user/backingType.d.ts"),
+        alias: "models",
+        source: path.join(__dirname, "../models/types.ts"),
       },
     ],
   },

@@ -3,8 +3,8 @@
  * Do not make changes to this file directly
  */
 
-import * as ctx from "../schema/context"
-import * as dynamoose from "../schema/user/backingType"
+import * as ctx from "../context"
+import * as models from "../models/types"
 
 
 
@@ -15,6 +15,28 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  BandAddMemberInput: { // input type
+    bandId: string; // String!
+    bandMemberRole: string; // String!
+    userId: string; // String!
+  }
+  BandCreateInput: { // input type
+    location: string; // String!
+    name: string; // String!
+  }
+  SetlistAddSongInput: { // input type
+    bandId: string; // String!
+    setlistId: string; // String!
+    songId: string; // String!
+  }
+  SetlistCreateInput: { // input type
+    bandId: string; // String!
+    title: string; // String!
+  }
+  SongCreateInput: { // input type
+    bandId: string; // String!
+    title: string; // String!
+  }
   UserCreateInput: { // input type
     email: string; // String!
     password: string; // String!
@@ -37,15 +59,24 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenRootTypes {
+  Band: models.Band;
+  BandDetails: models.BandDetails;
   Mutation: {};
   Query: {};
-  User: dynamoose.User;
+  Setlist: models.Setlist;
+  Song: models.Song;
+  User: models.User;
   UserToken: { // root type
     token: string; // String!
   }
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
+  BandAddMemberInput: NexusGenInputs['BandAddMemberInput'];
+  BandCreateInput: NexusGenInputs['BandCreateInput'];
+  SetlistAddSongInput: NexusGenInputs['SetlistAddSongInput'];
+  SetlistCreateInput: NexusGenInputs['SetlistCreateInput'];
+  SongCreateInput: NexusGenInputs['SongCreateInput'];
   UserCreateInput: NexusGenInputs['UserCreateInput'];
   UserCredentialsType: NexusGenInputs['UserCredentialsType'];
   String: NexusGenScalars['String'];
@@ -56,16 +87,49 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 }
 
 export interface NexusGenFieldTypes {
+  Band: { // field return type
+    details: NexusGenRootTypes['BandDetails']; // BandDetails!
+    id: string; // String!
+    members: NexusGenRootTypes['User'][]; // [User!]!
+    name: string; // String!
+    setlists: NexusGenRootTypes['Setlist'][]; // [Setlist!]!
+    songs: NexusGenRootTypes['Song'][]; // [Song!]!
+  }
+  BandDetails: { // field return type
+    location: string; // String!
+  }
   Mutation: { // field return type
+    addOneSongToSetlist: string; // String!
+    addOneUserToOneBand: string; // String!
+    createOneBand: NexusGenRootTypes['Band']; // Band!
+    createOneSetlist: NexusGenRootTypes['Setlist']; // Setlist!
+    createOneSong: NexusGenRootTypes['Song']; // Song!
     createOneUser: NexusGenRootTypes['UserToken'] | null; // UserToken
     login: NexusGenRootTypes['UserToken'] | null; // UserToken
   }
   Query: { // field return type
+    findOneUserByEmail: NexusGenRootTypes['User']; // User!
+    findSetlistsByBand: NexusGenRootTypes['Setlist'][]; // [Setlist!]!
+    findSongsByBand: NexusGenRootTypes['Song'][]; // [Song!]!
+    getOneBandById: NexusGenRootTypes['Band']; // Band!
     me: NexusGenRootTypes['User']; // User!
-    userById: NexusGenRootTypes['User']; // User!
-    users: NexusGenRootTypes['User'][]; // [User!]!
+  }
+  Setlist: { // field return type
+    band: NexusGenRootTypes['Band']; // Band!
+    bandId: string; // String!
+    id: string; // String!
+    songs: NexusGenRootTypes['Song'][]; // [Song!]!
+    title: string; // String!
+  }
+  Song: { // field return type
+    band: NexusGenRootTypes['Band']; // Band!
+    bandId: string; // String!
+    id: string; // String!
+    setlists: NexusGenRootTypes['Setlist']; // Setlist!
+    title: string; // String!
   }
   User: { // field return type
+    bands: NexusGenRootTypes['Band'][]; // [Band!]!
     email: string; // String!
   }
   UserToken: { // field return type
@@ -75,6 +139,21 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    addOneSongToSetlist: { // args
+      membership: NexusGenInputs['SetlistAddSongInput']; // SetlistAddSongInput!
+    }
+    addOneUserToOneBand: { // args
+      membership: NexusGenInputs['BandAddMemberInput']; // BandAddMemberInput!
+    }
+    createOneBand: { // args
+      band: NexusGenInputs['BandCreateInput']; // BandCreateInput!
+    }
+    createOneSetlist: { // args
+      setlist: NexusGenInputs['SetlistCreateInput']; // SetlistCreateInput!
+    }
+    createOneSong: { // args
+      song: NexusGenInputs['SongCreateInput']; // SongCreateInput!
+    }
     createOneUser: { // args
       user: NexusGenInputs['UserCreateInput']; // UserCreateInput!
     }
@@ -83,11 +162,17 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
-    userById: { // args
-      id: string; // String!
+    findOneUserByEmail: { // args
+      email: string; // String!
     }
-    users: { // args
-      last: number; // Int!
+    findSetlistsByBand: { // args
+      bandId: string; // String!
+    }
+    findSongsByBand: { // args
+      bandId: string; // String!
+    }
+    getOneBandById: { // args
+      bandId: string; // String!
     }
   }
 }
@@ -97,9 +182,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Mutation" | "Query" | "User" | "UserToken";
+export type NexusGenObjectNames = "Band" | "BandDetails" | "Mutation" | "Query" | "Setlist" | "Song" | "User" | "UserToken";
 
-export type NexusGenInputNames = "UserCreateInput" | "UserCredentialsType";
+export type NexusGenInputNames = "BandAddMemberInput" | "BandCreateInput" | "SetlistAddSongInput" | "SetlistCreateInput" | "SongCreateInput" | "UserCreateInput" | "UserCredentialsType";
 
 export type NexusGenEnumNames = never;
 
