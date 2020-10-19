@@ -1,10 +1,5 @@
 import shortid from "shortid";
-import {
-  EventDocument,
-  EventModel,
-  getEventsByBandQueryKey,
-  getEventByIdKey,
-} from "../db";
+import { EventDocument, EventModel, getEventsByBandQueryKey } from "../db";
 import type { EventCreateInput, Event, BandId } from "./types";
 
 const getEventFromRecord = (eventRecord: EventDocument): Event => ({
@@ -14,7 +9,7 @@ const getEventFromRecord = (eventRecord: EventDocument): Event => ({
   type: eventRecord.eventType,
   paid: eventRecord.eventIsPaid,
   date: eventRecord.eventDate,
-  time: eventRecord.eventTime,
+  calltime: eventRecord.eventTime,
 });
 
 const getEventFromCreateInput = (createInput: EventCreateInput): Event => ({
@@ -29,7 +24,7 @@ const getRecordFromEvent = (model: Event): EventDocument => new EventModel({
   eventType: model.type,
   eventIsPaid: model.paid,
   eventDate: model.date,
-  eventTime: model.time,
+  eventTime: model.calltime,
 });
 
 export const createEvent = async (
@@ -41,7 +36,9 @@ export const createEvent = async (
     await eventRecord.save();
     return event;
   } catch (e) {
-    throw new Error(`Failed to create event with name: ${createInput.name}`);
+    throw new Error(
+      `Failed to create event with name: ${createInput.name}: ${e.message}`,
+    );
   }
 };
 
