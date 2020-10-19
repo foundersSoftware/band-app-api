@@ -38,9 +38,9 @@ export const EventCreateInput = inputObjectType({
     t.string("bandId", { required: true });
     t.string("name", { required: true });
     t.date("date", { required: true });
-    t.time("time", { required: true });
+    t.time("calltime", { required: true });
     t.field("type", { type: "EventType", required: true });
-    t.boolean("paid", { default: false });
+    t.boolean("paid", { default: false, required: true });
   },
 });
 

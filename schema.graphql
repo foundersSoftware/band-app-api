@@ -43,10 +43,10 @@ type Event {
 
 input EventCreateInput {
   bandId: String!
+  calltime: Time!
   date: Date!
   name: String!
-  paid: Boolean = false
-  time: Time!
+  paid: Boolean! = false
   type: EventType!
 }
 

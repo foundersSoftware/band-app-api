@@ -36,10 +36,10 @@ export interface NexusGenInputs {
   }
   EventCreateInput: { // input type
     bandId: string; // String!
+    calltime: NexusGenScalars['Time']; // Time!
     date: NexusGenScalars['Date']; // Date!
     name: string; // String!
-    paid?: boolean | null; // Boolean
-    time: NexusGenScalars['Time']; // Time!
+    paid: boolean; // Boolean!
     type: NexusGenEnums['EventType']; // EventType!
   }
   SetlistAddSongInput: { // input type
