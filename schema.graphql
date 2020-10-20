@@ -4,6 +4,7 @@
 
 type Band {
   details: BandDetails!
+  events: [Event!]!
   id: String!
   members: [User!]!
   name: String!

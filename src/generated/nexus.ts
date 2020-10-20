@@ -115,6 +115,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 export interface NexusGenFieldTypes {
   Band: { // field return type
     details: NexusGenRootTypes['BandDetails']; // BandDetails!
+    events: NexusGenRootTypes['Event'][]; // [Event!]!
     id: string; // String!
     members: NexusGenRootTypes['User'][]; // [User!]!
     name: string; // String!
