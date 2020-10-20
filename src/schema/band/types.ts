@@ -3,6 +3,7 @@ import { fetchSongsByBand } from "../../models/song";
 import { fetchUsersByBand } from "../../models/bandMembership";
 import { fetchBandDetails } from "../../models/band";
 import { fetchSetlistsByBand } from "../../models/setlist";
+import { fetchEventsByBand } from "../../models/event";
 
 export const Band = objectType({
   name: "Band",
@@ -37,6 +38,11 @@ export const Band = objectType({
       type: "Setlist",
       list: true,
       resolve: async (parent) => fetchSetlistsByBand(parent.id),
+    });
+    t.field("events", {
+      type: "Event",
+      list: true,
+      resolve: async (parent) => fetchEventsByBand(parent.id),
     });
   },
 });

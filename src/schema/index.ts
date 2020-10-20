@@ -7,13 +7,14 @@ import * as userSchema from "./user";
 import * as bandSchema from "./band";
 import * as songSchema from "./song";
 import * as setlistSchema from "./setlist";
+import * as eventSchema from "./event";
 
 config({
   path: "/home/cory/projects/node/portfolio-backend/.env/.env.development",
 });
 
 export default makeSchema({
-  types: [userSchema, bandSchema, songSchema, setlistSchema],
+  types: [userSchema, bandSchema, songSchema, setlistSchema, eventSchema],
   outputs: {
     schema: path.join(__dirname, "./../../schema.graphql"),
     typegen: path.join(__dirname, "./../generated/nexus.ts"),

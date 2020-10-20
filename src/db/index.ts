@@ -4,3 +4,4 @@ export * from "./BandMembership";
 export * from "./Song";
 export * from "./Setlist";
 export * from "./SetlistMembership";
+export * from "./Event";
