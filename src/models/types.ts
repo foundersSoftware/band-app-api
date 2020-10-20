@@ -14,7 +14,9 @@ export type SetlistId = string;
 export type SetlistTitle = string;
 export type EventId = string;
 export type EventName = string;
-export type EventType = string;
+export type EventTypeId = string;
+export type EventTypeName = string;
+export type EventTypeColor = string;
 
 export interface UserCreateInput {
   email: Email;
@@ -93,18 +95,13 @@ export interface SetlistMembership {
   setlistTitle: SetlistTitle;
 }
 
-// export enum EventType {
-// PRACTICE,
-// GIG,
-// }
-
 export interface EventCreateInput {
   bandId: BandId;
   name: EventName;
   paid: boolean;
   date: Date;
   calltime: Date;
-  type: EventType;
+  typeId: EventTypeId;
 }
 
 export interface Event {
@@ -114,5 +111,18 @@ export interface Event {
   paid: boolean;
   date: Date;
   calltime: Date;
-  type: EventType;
+  typeId: EventTypeId;
+}
+
+export interface EventType {
+  id: EventTypeId;
+  bandId: BandId;
+  name: EventTypeName;
+  color: EventTypeColor;
+}
+
+export interface EventTypeCreateInput {
+  bandId: BandId;
+  name: EventTypeName;
+  color: EventTypeColor;
 }

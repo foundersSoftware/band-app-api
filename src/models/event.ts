@@ -6,7 +6,7 @@ const getEventFromRecord = (eventRecord: EventDocument): Event => ({
   bandId: eventRecord.pk,
   id: eventRecord.sk,
   name: eventRecord.eventName,
-  type: eventRecord.eventType,
+  typeId: eventRecord.eventTypeId,
   paid: eventRecord.eventIsPaid,
   date: eventRecord.eventDate,
   calltime: eventRecord.eventTime,
@@ -17,27 +17,29 @@ const getEventFromCreateInput = (createInput: EventCreateInput): Event => ({
   ...createInput,
 });
 
-const getRecordFromEvent = (model: Event): EventDocument => new EventModel({
-  pk: model.bandId,
-  sk: model.id,
-  eventName: model.name,
-  eventType: model.type,
-  eventIsPaid: model.paid,
-  eventDate: model.date,
-  eventTime: model.calltime,
-});
+const getRecordFromEvent = (model: Event): EventDocument =>
+  new EventModel({
+    pk: model.bandId,
+    sk: model.id,
+    eventName: model.name,
+    eventTypeId: model.typeId,
+    eventIsPaid: model.paid,
+    eventDate: model.date,
+    eventTime: model.calltime,
+  });
 
 export const createEvent = async (
-  createInput: EventCreateInput,
+  createInput: EventCreateInput
 ): Promise<Event> => {
   try {
+    // todo: verify that the event type exists for this band
     const event = getEventFromCreateInput(createInput);
     const eventRecord = getRecordFromEvent(event);
     await eventRecord.save();
     return event;
   } catch (e) {
     throw new Error(
-      `Failed to create event with name: ${createInput.name}: ${e.message}`,
+      `Failed to create event with name: ${createInput.name}: ${e.message}`
     );
   }
 };
@@ -45,7 +47,7 @@ export const createEvent = async (
 export const fetchEventsByBand = async (bandId: BandId) => {
   try {
     const eventRecords = await EventModel.query(
-      getEventsByBandQueryKey(bandId),
+      getEventsByBandQueryKey(bandId)
     ).exec();
     return eventRecords.map((record) => getEventFromRecord(record));
   } catch (e) {
