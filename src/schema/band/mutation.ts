@@ -1,4 +1,5 @@
 import { arg, mutationField } from "@nexus/schema";
+import { createDefaultEventTypesForBand } from "../../models/eventType";
 import { createBand } from "../../models/band";
 import { addUserToBand } from "../../models/bandMembership";
 
@@ -14,7 +15,9 @@ export const createOneBand = mutationField("createOneBand", {
       }
       const createdBand = await createBand(band);
       addUserToBand(user.email, createdBand.id, "admin");
-      return { ...createdBand, members: [user] };
+      // create default event types
+      const eventTypes = await createDefaultEventTypesForBand(createdBand.id);
+      return { ...createdBand, members: [user], eventTypes };
     } catch (e) {
       throw new Error(`Failed to create band with error: ${e.message}`);
     }
@@ -29,7 +32,7 @@ export const addOneUserToOneBand = mutationField("addOneUserToOneBand", {
   },
   resolve: async (
     _parent,
-    { membership: { userId, bandId, bandMemberRole } }
+    { membership: { userId, bandId, bandMemberRole } },
   ) => {
     try {
       addUserToBand(userId, bandId, bandMemberRole);

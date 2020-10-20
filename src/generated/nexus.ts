@@ -40,7 +40,12 @@ export interface NexusGenInputs {
     date: NexusGenScalars['Date']; // Date!
     name: string; // String!
     paid: boolean; // Boolean!
-    type: NexusGenEnums['EventType']; // EventType!
+    typeId: string; // String!
+  }
+  EventTypeCreateInput: { // input type
+    bandId: string; // String!
+    color: string; // String!
+    name: string; // String!
   }
   SetlistAddSongInput: { // input type
     bandId: string; // String!
@@ -66,7 +71,6 @@ export interface NexusGenInputs {
 }
 
 export interface NexusGenEnums {
-  EventType: models.EventType
 }
 
 export interface NexusGenScalars {
@@ -83,6 +87,7 @@ export interface NexusGenRootTypes {
   Band: models.Band;
   BandDetails: models.BandDetails;
   Event: models.Event;
+  EventType: models.EventType;
   Mutation: {};
   Query: {};
   Setlist: models.Setlist;
@@ -97,12 +102,12 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   BandAddMemberInput: NexusGenInputs['BandAddMemberInput'];
   BandCreateInput: NexusGenInputs['BandCreateInput'];
   EventCreateInput: NexusGenInputs['EventCreateInput'];
+  EventTypeCreateInput: NexusGenInputs['EventTypeCreateInput'];
   SetlistAddSongInput: NexusGenInputs['SetlistAddSongInput'];
   SetlistCreateInput: NexusGenInputs['SetlistCreateInput'];
   SongCreateInput: NexusGenInputs['SongCreateInput'];
   UserCreateInput: NexusGenInputs['UserCreateInput'];
   UserCredentialsType: NexusGenInputs['UserCredentialsType'];
-  EventType: NexusGenEnums['EventType'];
   String: NexusGenScalars['String'];
   Int: NexusGenScalars['Int'];
   Float: NexusGenScalars['Float'];
@@ -116,6 +121,7 @@ export interface NexusGenFieldTypes {
   Band: { // field return type
     details: NexusGenRootTypes['BandDetails']; // BandDetails!
     events: NexusGenRootTypes['Event'][]; // [Event!]!
+    eventTypes: NexusGenRootTypes['EventType'][]; // [EventType!]!
     id: string; // String!
     members: NexusGenRootTypes['User'][]; // [User!]!
     name: string; // String!
@@ -132,11 +138,18 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     name: string; // String!
     paid: boolean; // Boolean!
-    type: NexusGenEnums['EventType']; // EventType!
+    type: NexusGenRootTypes['EventType']; // EventType!
+  }
+  EventType: { // field return type
+    bandId: string; // String!
+    color: string; // String!
+    id: string; // String!
+    name: string; // String!
   }
   Mutation: { // field return type
     addOneSongToSetlist: string; // String!
     addOneUserToOneBand: string; // String!
+    createEventType: NexusGenRootTypes['EventType']; // EventType!
     createOneBand: NexusGenRootTypes['Band']; // Band!
     createOneEvent: NexusGenRootTypes['Event']; // Event!
     createOneSetlist: NexusGenRootTypes['Setlist']; // Setlist!
@@ -149,6 +162,7 @@ export interface NexusGenFieldTypes {
     findOneUserByEmail: NexusGenRootTypes['User']; // User!
     findSetlistsByBand: NexusGenRootTypes['Setlist'][]; // [Setlist!]!
     findSongsByBand: NexusGenRootTypes['Song'][]; // [Song!]!
+    getEventTypeById: NexusGenRootTypes['EventType']; // EventType!
     getOneBandById: NexusGenRootTypes['Band']; // Band!
     me: NexusGenRootTypes['User']; // User!
   }
@@ -183,6 +197,9 @@ export interface NexusGenArgTypes {
     addOneUserToOneBand: { // args
       membership: NexusGenInputs['BandAddMemberInput']; // BandAddMemberInput!
     }
+    createEventType: { // args
+      eventType: NexusGenInputs['EventTypeCreateInput']; // EventTypeCreateInput!
+    }
     createOneBand: { // args
       band: NexusGenInputs['BandCreateInput']; // BandCreateInput!
     }
@@ -215,6 +232,10 @@ export interface NexusGenArgTypes {
     findSongsByBand: { // args
       bandId: string; // String!
     }
+    getEventTypeById: { // args
+      bandId: string; // String!
+      id: string; // String!
+    }
     getOneBandById: { // args
       bandId: string; // String!
     }
@@ -226,11 +247,11 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Band" | "BandDetails" | "Event" | "Mutation" | "Query" | "Setlist" | "Song" | "User" | "UserToken";
+export type NexusGenObjectNames = "Band" | "BandDetails" | "Event" | "EventType" | "Mutation" | "Query" | "Setlist" | "Song" | "User" | "UserToken";
 
-export type NexusGenInputNames = "BandAddMemberInput" | "BandCreateInput" | "EventCreateInput" | "SetlistAddSongInput" | "SetlistCreateInput" | "SongCreateInput" | "UserCreateInput" | "UserCredentialsType";
+export type NexusGenInputNames = "BandAddMemberInput" | "BandCreateInput" | "EventCreateInput" | "EventTypeCreateInput" | "SetlistAddSongInput" | "SetlistCreateInput" | "SongCreateInput" | "UserCreateInput" | "UserCredentialsType";
 
-export type NexusGenEnumNames = "EventType";
+export type NexusGenEnumNames = never;
 
 export type NexusGenInterfaceNames = never;
 
