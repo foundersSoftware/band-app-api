@@ -17,19 +17,19 @@ const EventSchema = new dynamoose.Schema(
       set: (value) => EVENT_KEY_PREFIX + value,
     },
     eventName: String,
-    eventType: String,
+    eventTypeId: String,
     eventIsPaid: Boolean,
     eventDate: Date,
     eventTime: Date,
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export interface EventDocument extends BaseDocument {
   eventName: string;
-  eventType: string;
+  eventTypeId: string;
   eventIsPaid: boolean;
   eventDate: Date;
   eventTime: Date;
@@ -48,13 +48,8 @@ export const EventModel = dynamoose.model<EventDocument>(
         frequency: 1000,
       },
     },
-  },
+  }
 );
-
-// export const getEventByIdKey = (eventId: string, bandId: string) => ({
-// pk: BAND_KEY_PREFIX + bandId,
-// sk: EVENT_KEY_PREFIX + eventId,
-// });
 
 export const getEventsByBandQueryKey = (id: string): Key => ({
   pk: BAND_KEY_PREFIX + id,
