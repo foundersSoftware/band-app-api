@@ -4,6 +4,7 @@ import { fetchUsersByBand } from "../../models/bandMembership";
 import { fetchBandDetails } from "../../models/band";
 import { fetchSetlistsByBand } from "../../models/setlist";
 import { fetchEventsByBand } from "../../models/event";
+import { fetchEventTypesByBand } from "../../models/eventType";
 
 export const Band = objectType({
   name: "Band",
@@ -43,6 +44,16 @@ export const Band = objectType({
       type: "Event",
       list: true,
       resolve: async (parent) => fetchEventsByBand(parent.id),
+    });
+    t.field("eventTypes", {
+      type: "EventType",
+      list: true,
+      resolve: async (parent) => {
+        if (!parent.eventTypes) {
+          return fetchEventTypesByBand(parent.id);
+        }
+        return parent.eventTypes;
+      },
     });
   },
 });

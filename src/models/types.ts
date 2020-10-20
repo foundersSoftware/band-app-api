@@ -53,6 +53,7 @@ export interface Band {
   id: BandId;
   songs?: Song[];
   members?: User[];
+  eventTypes?: EventType[];
   details?: BandDetails;
 }
 
