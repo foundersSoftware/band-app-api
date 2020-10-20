@@ -5,6 +5,7 @@
 type Band {
   details: BandDetails!
   events: [Event!]!
+  eventTypes: [EventType!]!
   id: String!
   members: [User!]!
   name: String!
@@ -48,17 +49,26 @@ input EventCreateInput {
   date: Date!
   name: String!
   paid: Boolean! = false
-  type: EventType!
+  typeId: String!
 }
 
-enum EventType {
-  GIG
-  PRACTICE
+type EventType {
+  bandId: String!
+  color: String!
+  id: String!
+  name: String!
+}
+
+input EventTypeCreateInput {
+  bandId: String!
+  color: String!
+  name: String!
 }
 
 type Mutation {
   addOneSongToSetlist(membership: SetlistAddSongInput!): String!
   addOneUserToOneBand(membership: BandAddMemberInput!): String!
+  createEventType(eventType: EventTypeCreateInput!): EventType!
   createOneBand(band: BandCreateInput!): Band!
   createOneEvent(event: EventCreateInput!): Event!
   createOneSetlist(setlist: SetlistCreateInput!): Setlist!
@@ -72,6 +82,7 @@ type Query {
   findOneUserByEmail(email: String!): User!
   findSetlistsByBand(bandId: String!): [Setlist!]!
   findSongsByBand(bandId: String!): [Song!]!
+  getEventTypeById(bandId: String!, id: String!): EventType!
   getOneBandById(bandId: String!): Band!
   me: User!
 }
